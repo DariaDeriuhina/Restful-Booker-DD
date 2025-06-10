@@ -3,12 +3,11 @@ package ui.pages;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import ui.pages.sections.BookingSection;
-import ui.pages.sections.ContactSection;
-import ui.pages.sections.LocationSection;
-import ui.pages.sections.RoomsSection;
+import ui.components.sections.BookingSection;
+import ui.components.sections.ContactSection;
+import ui.components.sections.LocationSection;
+import ui.components.sections.RoomsSection;
 
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @Getter
@@ -19,6 +18,7 @@ public class HomePage extends BasePage {
     private final ContactSection contact;
     private final LocationSection location;
     private final RoomsSection rooms;
+    private final SelenideElement bookingBtn;
 
     public HomePage() {
         pageTitle = $("h1");
@@ -26,6 +26,7 @@ public class HomePage extends BasePage {
         contact = new ContactSection();
         location = new LocationSection();
         rooms = new RoomsSection();
+        bookingBtn = $("[href='#booking']");
     }
 
     public HomePage openHomePage() {
@@ -33,8 +34,8 @@ public class HomePage extends BasePage {
         return this;
     }
 
-    public BookingSection goToBookingViaButton(String buttonText) {
-        clickButtonByText(buttonText);
+    public BookingSection goToBookingViaButton() {
+        bookingBtn.click();
         return booking();
     }
 }

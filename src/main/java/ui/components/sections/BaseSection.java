@@ -1,12 +1,14 @@
-package ui.pages.sections;
+package ui.components.sections;
 
 import com.codeborne.selenide.SelenideElement;
-import ui.elements.BaseElement;
+import lombok.Getter;
+import ui.pages.BasePage;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 
-public class BaseSection extends BaseElement {
+@Getter
+public class BaseSection extends BasePage {
 
     protected final SelenideElement section;
 
@@ -14,7 +16,7 @@ public class BaseSection extends BaseElement {
         this.section = section;
     }
 
-    protected void verifySectionTitle(String expectedText) {
+    public void verifySectionTitle(String expectedText) {
         section.$("h2, h3").shouldBe(visible).shouldHave(text(expectedText));
     }
 }

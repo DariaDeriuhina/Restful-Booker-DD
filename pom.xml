@@ -21,6 +21,7 @@
         <surefire.version>3.5.0</surefire.version>
         <testng.version>7.11.0</testng.version>
         <webdrivermanager.version>6.1.0</webdrivermanager.version>
+        <allure-testng.version>2.29.0</allure-testng.version>
     </properties>
 
     <dependencies>
@@ -29,6 +30,14 @@
             <groupId>com.codeborne</groupId>
             <artifactId>selenide</artifactId>
             <version>${selenide.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-maven -->
+        <!-- https://mvnrepository.com/artifact/io.qameta.allure/allure-testng -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-testng</artifactId>
+            <version>${allure-testng.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->

@@ -15,3 +15,4 @@
 # Allure Reports
 /allure-results
 /allure-report
+/src/main/resources/env.properties

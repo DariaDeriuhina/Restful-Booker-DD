@@ -1,6 +1,9 @@
-package ui.pages.sections;
+package ui.components.sections;
 
 import com.codeborne.selenide.ElementsCollection;
+import ui.components.RoomCard;
+
+import java.util.List;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
 import static com.codeborne.selenide.Selenide.$;
@@ -14,16 +17,17 @@ public class RoomsSection extends BaseSection {
         roomCards = $$(".room-card");
     }
 
-    public void verifyTitle(String title) {
-        verifySectionTitle(title);
-    }
-
     public void verifyRoomCardsVisible() {
         roomCards.shouldBe(sizeGreaterThan(0));
     }
 
-    public void bookFirstRoom() {
-        var firstBookBtn = roomCards.first().$("a.btn");
-        firstBookBtn.click();
+    public RoomCard getFirstRoomCard() {
+        return new RoomCard(roomCards.first());
+    }
+
+    public List<RoomCard> getRoomCards() {
+        return roomCards.stream()
+                .map(RoomCard::new)
+                .toList();
     }
 }

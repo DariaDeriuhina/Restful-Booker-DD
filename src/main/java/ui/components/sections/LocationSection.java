@@ -1,4 +1,4 @@
-package ui.pages.sections;
+package ui.components.sections;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -9,11 +9,7 @@ public class LocationSection extends BaseSection {
         super($("#location"));
     }
 
-    public void verifyTitle(String title) {
-        verifySectionTitle(title);
-    }
-
     public void verifyMapLoaded() {
-        $("img[src*='cartodb-basemaps']").shouldBe(visible);;
+        $("img[src*='cartodb-basemaps']").shouldBe(visible);
     }
 }

@@ -25,6 +25,7 @@ public abstract class BaseTest {
 
         logger.info("Starting test with browser: {} | Headless: {}", browserName, headless);
         Selenide.open(EnvProperties.BASE_URL);
+        Selenide.webdriver().driver().getWebDriver().manage().window().maximize();
     }
 
     @AfterMethod
