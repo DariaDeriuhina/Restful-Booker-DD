@@ -13,9 +13,14 @@ public class EnvProperties {
     public static String BASE_URL;
 
     public static void setUpInstance() {
-        loadProperties(PATH_TO_RESOURCES + PROPERTIES_FILE_NAME);
+        var filePath = PATH_TO_RESOURCES + PROPERTIES_FILE_NAME;
+        try {
+            loadProperties(filePath);
+        } catch (Exception ignored) {
+        }
         BASE_URL = getProperty("baseUrl", "https://automationintesting.online/");
     }
+
 
     private static void loadProperties(String filePath) {
         try (var fis = new FileInputStream(filePath)) {
