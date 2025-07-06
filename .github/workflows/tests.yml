@@ -1,0 +1,42 @@
+name: Run Tests and Upload Allure Report
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '18'
+          distribution: 'temurin'
+
+      - name: Set up Maven
+        run: mvn --version
+
+      - name: Run Tests
+        run: mvn clean test -DbrowserName=chrome -Dheadless=true
+
+      - name: Generate Allure Report
+        run: mvn io.qameta.allure:allure-maven:2.10.0:report
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path: target/site/allure-maven-plugin
+
+      - name: Upload Allure Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-results
+          path: target/allure-results
