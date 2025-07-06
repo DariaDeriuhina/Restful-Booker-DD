@@ -1,6 +1,7 @@
 package ui.components.sections;
 
 import com.codeborne.selenide.ElementsCollection;
+import io.qameta.allure.Step;
 import ui.components.RoomCard;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RoomsSection extends BaseSection {
         roomCards.shouldBe(sizeGreaterThan(0));
     }
 
+    @Step("Get first room card")
     public RoomCard getFirstRoomCard() {
         return new RoomCard(roomCards.first());
     }

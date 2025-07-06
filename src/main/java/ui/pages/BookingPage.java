@@ -1,6 +1,7 @@
 package ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import java.time.LocalDate;
 
@@ -9,7 +10,6 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class BookingPage extends BasePage {
-
     private final SelenideElement firstNameField;
     private final SelenideElement lastNameField;
     private final SelenideElement emailField;
@@ -24,6 +24,7 @@ public class BookingPage extends BasePage {
         confirmationCardBodyDates = $(".booking-card").$(".text-center");
     }
 
+    @Step("Fill the form with: {}, {}, {}")
     public BookingPage fillForm(String firstName, String lastName, String email, String phone) {
         firstNameField.setValue(firstName);
         lastNameField.setValue(lastName);
@@ -32,6 +33,7 @@ public class BookingPage extends BasePage {
         return this;
     }
 
+    @Step("Click Reserve Now")
     public BookingPage clickReserveNow() {
         clickButtonByText("Reserve Now");
         return this;
@@ -49,6 +51,7 @@ public class BookingPage extends BasePage {
         $$("button").findBy(text(buttonText)).shouldBe(visible).doubleClick();
     }
 
+    @Step("Open booking page")
     public BookingPage openBookingPage(LocalDate checkIn, LocalDate checkOut, int roomId) {
         var url = "https://automationintesting.online/reservation/%d?checkin=%s&checkout=%s".formatted(roomId, checkIn, checkOut);
         openPage(url);

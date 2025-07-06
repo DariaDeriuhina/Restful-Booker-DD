@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingAvailability {
-    public String start;
-    public String end;
-    public String title;
+    private String start;
+    private String end;
+    private String title;
 }

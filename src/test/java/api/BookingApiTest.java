@@ -2,69 +2,61 @@ package api;
 
 import api.models.BookingDates;
 import api.models.BookingRequest;
-import api.testdata.DateRange;
-import api.services.BookingApiService;
 import api.services.RoomApiService;
+import api.testdata.DateRange;
+import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 import test_data.BookingTestData;
 import utils.DateUtils;
+import utils.base.BaseApiTest;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static utils.constants.TestGroups.API;
+import static utils.constants.TestGroups.REGRESSION;
 
-public class BookingApiTest {
+public class BookingApiTest extends BaseApiTest {
 
-    private final BookingApiService bookingApi = new BookingApiService();
+    private final BookingFacade bookingFacade = new BookingFacade();
     private final RoomApiService roomApi = new RoomApiService();
 
-    @Test(description = "Create booking and verify it blocks the room on selected dates")
+    @Description("Create booking and verify it blocks the room on selected dates")
+    @Test(groups = {API, REGRESSION})
     public void roomIsUnavailableAfterBookingTest() {
-        var checkIn = DateUtils.generateFutureDate(10, 15);
+        var checkIn = DateUtils.generateFutureDate(10);
         var checkOut = checkIn.plusDays(1);
-        int roomId = 3;
-        var bookingRequest = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname("Test")
-                .lastname("User")
-                .depositpaid(false)
-                .email("test@example.com")
-                .phone("12345678901")
-                .bookingdates(
-                        BookingDates.builder()
-                                .checkin(checkIn.toString())
-                                .checkout(checkOut.toString())
-                                .build()
-                )
-                .build();
+        int roomId = new Random().nextInt(1, 9);
 
-        var bookingResponse = bookingApi.createBooking(bookingRequest);
-        assertThat(bookingResponse.statusCode()).isEqualTo(200);
+        var bookingResult = bookingFacade.bookDefault(roomId, checkIn, checkOut);
+        assertThat(bookingResult.isSuccess()).isTrue();
 
         var availability = roomApi.getRoomAvailability(roomId);
         var isUnavailable = availability.stream()
                 .anyMatch(item ->
-                        item.getStart().equals(checkIn.toString())
-                                && item.getEnd().equals(checkOut.toString())
-                                && item.getTitle().equals("Unavailable")
+                        item.getStart().equals(checkIn.toString()) &&
+                                item.getEnd().equals(checkOut.toString()) &&
+                                item.getTitle().equals("Unavailable")
                 );
         assertThat(isUnavailable)
                 .as("Expected unavailable date range to be present in availability report")
                 .isTrue();
 
-        var secondAttempt = bookingApi.createBooking(bookingRequest);
+        var secondAttempt = bookingFacade.bookDefault(roomId, checkIn, checkOut);
         assertThat(secondAttempt.statusCode()).isEqualTo(500);
     }
 
-    @Test(description = "Multiple bookings on different dates should all appear in availability report")
-    public void multipleBookingsShouldBeUnavailableInReport() {
-        int roomId = 3;
-
+    @Description("Multiple bookings on different dates should all appear in availability report")
+    @Test(groups = {API, REGRESSION})
+    public void multipleBookingsTest() {
+        var roomId = new Random().nextInt(1, 9);;
         var dateRanges = List.of(
                 new DateRange(10, 12),
                 new DateRange(13, 15),
@@ -72,113 +64,59 @@ public class BookingApiTest {
         );
 
         for (var range : dateRanges) {
-            var bookingRequest = new BookingRequest(
-                    roomId,
-                    "Mass",
-                    "Booking",
-                    false,
-                    "massbooking@example.com",
-                    "12345678901",
-                    new BookingDates(range.start(), range.end())
-            );
-            var response = bookingApi.createBooking(bookingRequest);
-            assertThat(response.statusCode()).isEqualTo(200);
+            var start = LocalDate.parse(range.start());
+            var end = LocalDate.parse(range.end());
+            var result = bookingFacade.bookDefault(roomId, start, end);
+            assertThat(result.isSuccess()).isTrue();
         }
 
         var availabilityResponse = roomApi.getRoomAvailability(roomId);
 
         for (var range : dateRanges) {
-            var found = availabilityResponse.stream().anyMatch(a ->
-                    a.getStart().equals(range.start())
-                            && a.getEnd().equals(range.end())
-                            && a.getTitle().equals("Unavailable")
+            var found = availabilityResponse.stream().anyMatch(item ->
+                    item.getStart().equals(range.start()) &&
+                            item.getEnd().equals(range.end()) &&
+                            item.getTitle().equals("Unavailable")
             );
-
             assertThat(found)
                     .as("Expected unavailable block from %s to %s", range.start(), range.end())
                     .isTrue();
         }
     }
 
-    @Test(description = "POST /booking without booking dates should not be completed")
+    @Description("POST /booking without booking dates should not be completed")
+    @Test(groups = {API, REGRESSION})
     public void bookingWithoutDatesTest() {
-        var roomId = 3;
-        var bookingRequest = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname("Test")
-                .lastname("User")
-                .depositpaid(false)
-                .email("test@example.com")
-                .phone("12345678901")
-                .build();
-
-        var bookingResponse = bookingApi.createBooking(bookingRequest);
-        assertThat(bookingResponse.statusCode()).isEqualTo(500);
-
-        var errorMessages = bookingResponse.jsonPath().getList("errors", String.class);
-        assertThat(errorMessages).containsExactly("Failed to create booking");
+        int roomId = new Random().nextInt(1, 9);;
+        var bookingResult = bookingFacade.bookRoomWithoutDates(roomId);
+        assertThat(bookingResult.statusCode()).isEqualTo(500);
+        assertThat(bookingResult.hasExactlyErrors(List.of("Failed to create booking"))).isTrue();
     }
 
-    @Test(description = "BUG: POST /booking should reject booking with check-in date in the past")
+    @Description("BUG: POST /booking should reject booking with check-in date in the past")
+    @Test(groups = {API, REGRESSION})
     public void bookingInPastShouldBeRejectedTest() {
-        int roomId = 2;
+        int roomId = new Random().nextInt(1, 9);;
         var checkIn = DateUtils.generatePastDate(1, 100);
         var checkOut = checkIn.plusDays(1);
 
-        var bookingRequest = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname("Past")
-                .lastname("Tester")
-                .depositpaid(false)
-                .email("past@example.com")
-                .phone("12345678901")
-                .bookingdates(
-                        BookingDates.builder()
-                                .checkin(checkIn.toString())
-                                .checkout(checkOut.toString())
-                                .build()
-                )
-                .build();
-
-        //Response is 200, this is a bug
-        var response = bookingApi.createBooking(bookingRequest);
-        assertThat(response.statusCode()).isEqualTo(400);
-
-        var errors = response.jsonPath().getList("errors", String.class);
-        assertThat(errors).isNotEmpty();
+        var result = bookingFacade.bookDefault(roomId, checkIn, checkOut);
+        assertThat(result.statusCode()).isEqualTo(400);
+        assertThat(result.hasAnyError()).isFalse();
     }
 
-    @Test(description = "Only one of two simultaneous bookings for the same room and date should succeed")
+    @Description("Only one of two simultaneous bookings for the same room and date should succeed")
+    @Test(groups = {API, REGRESSION})
     public void concurrentBookingTest() throws Exception {
-        int roomId = 2;
-        var checkIn = DateUtils.generateFutureDate(10, 20).toString();
-        var checkOut = DateUtils.generateFutureDate(21, 30).toString();
-
-        var request1 = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname("User1")
-                .lastname("Parallel")
-                .depositpaid(true)
-                .email("user1@example.com")
-                .phone("12345678901")
-                .bookingdates(new BookingDates(checkIn, checkOut))
-                .build();
-
-        var request2 = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname("User2")
-                .lastname("Parallel")
-                .depositpaid(true)
-                .email("user2@example.com")
-                .phone("12345678902")
-                .bookingdates(new BookingDates(checkIn, checkOut))
-                .build();
+        int roomId = new Random().nextInt(1, 9);;
+        var checkIn = DateUtils.generateFutureDate(10, 20);
+        var checkOut = DateUtils.generateFutureDate(21, 30);
 
         var executor = Executors.newFixedThreadPool(2);
         try {
             List<Callable<Response>> tasks = List.of(
-                    () -> bookingApi.createBooking(request1),
-                    () -> bookingApi.createBooking(request2)
+                    () -> bookingFacade.bookDefault(roomId, checkIn, checkOut).response(),
+                    () -> bookingFacade.bookDefault(roomId, checkIn, checkOut).response()
             );
 
             var futures = executor.invokeAll(tasks);
@@ -188,21 +126,16 @@ public class BookingApiTest {
                 threadResults[i] = futures.get(i).get();
             }
 
-            var successCount = (int) Arrays.stream(threadResults)
+            var successCount = Arrays.stream(threadResults)
                     .filter(response -> response.statusCode() == 200)
                     .count();
 
-            var failureCount = (int) Arrays.stream(threadResults)
+            var failureCount = Arrays.stream(threadResults)
                     .filter(response -> response.statusCode() != 200)
                     .count();
 
-            assertThat(successCount)
-                    .as("Only one booking should succeed")
-                    .isEqualTo(1);
-
-            assertThat(failureCount)
-                    .as("Second booking should be rejected")
-                    .isEqualTo(1);
+            assertThat(successCount).as("Only one booking should succeed").isEqualTo(1);
+            assertThat(failureCount).as("Second booking should be rejected").isEqualTo(1);
         } finally {
             executor.shutdown();
             if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
@@ -211,48 +144,55 @@ public class BookingApiTest {
         }
     }
 
-    @Test(description = "BUG: API should not accept dangerous payloads in firstname",
-            dataProvider = "maliciousInputProvider", dataProviderClass = BookingTestData.class)
-    public void sqlInjectionBookingFormTest(String maliciousInput) {
-        int roomId = 8;
+    @Description("BUG: API should not accept dangerous payloads in firstname")
+    @Test(groups = {API, REGRESSION}, dataProvider = "maliciousInputProvider", dataProviderClass = BookingTestData.class)
+    public void sqlInjectionBookingFormTest(String testCase, String maliciousInput) {
+        int roomId = new Random().nextInt(1, 9);
         var checkIn = DateUtils.generatePastDate(10, 100);
+        var checkOut = checkIn.plusDays(1);
 
-        System.out.println(checkIn);
-        var bookingRequest = BookingRequest.builder()
-                .roomid(roomId)
-                .firstname(maliciousInput)
-                .lastname("Safe")
-                .depositpaid(true)
-                .email("safe@example.com")
-                .phone("12345678901")
-                .bookingdates(BookingDates.builder()
-                        .checkin(checkIn.toString())
-                        .checkout(checkIn.plusDays(1).toString())
-                        .build())
-                .build();
-
-        var response = bookingApi.createBooking(bookingRequest);
-
-        assertThat(response.statusCode())
-                .as("Input [%s] should not be accepted as firstname", maliciousInput)
-                .isNotEqualTo(200);
+        var result = bookingFacade.bookWithMaliciousName(roomId, checkIn, checkOut, maliciousInput);
+        assertThat(result.statusCode()).isNotEqualTo(200);
     }
 
-    @Test(description = "Reservation form validation",
-            dataProvider = "bookingFormData", dataProviderClass = BookingTestData.class)
-    public void apiBookingValidationTest(int roomid, String firstname, String lastname, boolean depositpaid,
+    @Description("Reservation form validation")
+    @Test(groups = {API, REGRESSION}, dataProvider = "bookingFormData", dataProviderClass = BookingTestData.class)
+    public void apiBookingValidationTest(String testCase, String firstname, String lastname, boolean depositpaid,
                                          String email, String phone, BookingDates bookingdates,
                                          List<String> expectedWarnings) {
+        var roomid = new Random().nextInt(1, 9);
         var request = new BookingRequest(roomid, firstname, lastname, depositpaid, email, phone, bookingdates);
-        var response = bookingApi.createBooking(request);
+        var result = bookingFacade.book(request);
 
         if (expectedWarnings.isEmpty()) {
-            response.then().statusCode(200);
+            assertThat(result.statusCode()).isEqualTo(200);
         } else {
-            response.then().statusCode(400);
-            var actualErrors = response.jsonPath().getList("errors");
-            assertThat(actualErrors).containsAll(expectedWarnings);
-            assertThat(actualErrors).hasSize(expectedWarnings.size());
+            assertThat(result.statusCode()).isEqualTo(400);
+            var actualErrors = result.getErrors();
+            assertThat(actualErrors).containsExactlyInAnyOrderElementsOf(expectedWarnings);
         }
+    }
+
+    @Description("Special characters in names should be handled properly")
+    @Test(groups = {API, REGRESSION}, dataProvider = "specialCharacters", dataProviderClass = BookingTestData.class)
+    public void specialCharactersInNamesTest(String firstName, String lastName) {
+        int roomId = new Random().nextInt(1, 9);;
+        var checkIn = DateUtils.generateFutureDate(10, 100);
+        var checkOut = checkIn.plusDays(1);
+            var request = BookingRequest.builder()
+                    .roomid(roomId)
+                    .firstname(firstName)
+                    .lastname(lastName)
+                    .depositpaid(true)
+                    .email("test@example.com")
+                    .phone("12345678901")
+                    .bookingdates(new BookingDates(
+                            checkIn.toString(), checkOut.toString()
+                    ))
+                    .build();
+
+            var result = bookingFacade.book(request);
+
+            assertThat(result.isSuccess()).isTrue();
     }
 }

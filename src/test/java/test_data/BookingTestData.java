@@ -27,31 +27,140 @@ public class BookingTestData {
         };
     }
 
+    @DataProvider(name = "maliciousInputProvider")
+    public Object[][] maliciousInputProvider() {
+        return new Object[][]{
+                {"SQL Injection - DROP", "'; DROP TABLE u--"},          // 17 chars
+                {"SQL Injection - OR", "admin' OR '1'='1"},            // 16 chars
+                {"SQL Injection - Bobby", "Robert');--"},              // 11 chars
+                {"SQL Injection - Bool", "' OR 1=1--"},                // 10 chars
+                {"Path Traversal", "../etc/passwd"},                   // 13 chars
+                {"XSS Script", "<script>alert()"},                     // 15 chars
+                {"Command Injection", "; rm -rf /"},                   // 10 chars
+                {"LDAP Injection", "*)(uid=*))(|(uid*"},               // 17 chars
+                {"XML Injection", "<?xml><foo>&xxe;"},                 // 16 chars
+                {"NoSQL Injection", "{'$ne': null}"},                  // 13 chars
+                {"Unicode bypass", "' OR 'x'='x"},                     // 11 chars
+                {"Null byte", "admin\0"},                              // 6 chars
+                {"HTML tags", "<h1>hack</h1>"},                        // 13 chars
+                {"JS event", "onclick=alert(1)"},                      // 16 chars
+                {"SQL comment", "admin'--"},                           // 8 chars
+                {"Escape quote", "admin\"--"}                          // 9 chars
+        };
+    }
+
     @DataProvider(name = "bookingFormData")
-    public Object[][] bookingFormData() {
-        var roomId = 1;
-        var depositPaid = true;
-        var dates = new BookingDates("2024-01-01", "2024-01-05");
+    public Object[][] bookingFieldValidation() {
+        var validDates = new BookingDates("2024-01-01", "2024-01-05");
 
         return new Object[][]{
+                // Firstname validation
                 {
-                        roomId,
-                        "Anna",
-                        "Smith",
-                        depositPaid,
-                        "anna@example.com",
-                        "380123456789",
-                        dates,
+                        "Empty firstname",
+                        "", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 18", "Firstname should not be blank")
+                },
+                {
+                        "Firstname too short",
+                        "An", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 18")
+                },
+                {
+                        "Firstname at min boundary",
+                        "Ann", "Smith", true, "anna@example.com", "380123456789", validDates,
                         List.of()
                 },
                 {
-                        roomId,
-                        "",
-                        "",
-                        depositPaid,
-                        "",
-                        "",
-                        dates,
+                        "Firstname at max boundary",
+                        "A".repeat(18), "Smith", true, "anna@example.com", "380123456789", validDates,
+                        List.of()
+                },
+                {
+                        "Firstname too long",
+                        "A".repeat(19), "Smith", true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 18")
+                },
+
+                // Lastname validation
+                {
+                        "Empty lastname",
+                        "Anna", "", true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 30", "Lastname should not be blank")
+                },
+                {
+                        "Lastname too short",
+                        "Anna", "Sm", true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 30")
+                },
+                {
+                        "Lastname at max boundary",
+                        "Anna", "S".repeat(30), true, "anna@example.com", "380123456789", validDates,
+                        List.of()
+                },
+                {
+                        "Lastname too long",
+                        "Anna", "S".repeat(31), true, "anna@example.com", "380123456789", validDates,
+                        List.of("size must be between 3 and 30")
+                },
+
+                // Email validation
+                {
+                        "Empty email",
+                        "Anna", "Smith", true, "", "380123456789", validDates,
+                        List.of("must not be empty")
+                },
+                {
+                        "Invalid email - no @",
+                        "Anna", "Smith", true, "invalidemail", "380123456789", validDates,
+                        List.of("must be a well-formed email address")
+                },
+                {
+                        "Invalid email - no domain",
+                        "Anna", "Smith", true, "test@", "380123456789", validDates,
+                        List.of("must be a well-formed email address")
+                },
+                {
+                        "Invalid email - no local part",
+                        "Anna", "Smith", true, "@example.com", "380123456789", validDates,
+                        List.of("must be a well-formed email address")
+                },
+                {
+                        "Invalid email - double @",
+                        "Anna", "Smith", true, "test@@example.com", "380123456789", validDates,
+                        List.of("must be a well-formed email address")
+                },
+
+                // Phone validation
+                {
+                        "Empty phone",
+                        "Anna", "Smith", true, "anna@example.com", "", validDates,
+                        List.of("must not be empty", "size must be between 11 and 21")
+                },
+                {
+                        "Phone too short",
+                        "Anna", "Smith", true, "anna@example.com", "1234567890", validDates,
+                        List.of("size must be between 11 and 21")
+                },
+                {
+                        "Phone at min boundary",
+                        "Anna", "Smith", true, "anna@example.com", "12345678901", validDates,
+                        List.of()
+                },
+                {
+                        "Phone at max boundary",
+                        "Anna", "Smith", true, "anna@example.com", "1".repeat(21), validDates,
+                        List.of()
+                },
+                {
+                        "Phone too long",
+                        "Anna", "Smith", true, "anna@example.com", "1".repeat(22), validDates,
+                        List.of("size must be between 11 and 21")
+                },
+
+                // Multiple errors
+                {
+                        "All fields empty",
+                        "", "", true, "", "", validDates,
                         List.of(
                                 "must not be empty",
                                 "size must be between 3 and 18",
@@ -62,80 +171,23 @@ public class BookingTestData {
                                 "must not be empty"
                         )
                 },
+
+                // Valid booking
                 {
-                        roomId,
-                        "An",
-                        "Smith",
-                        depositPaid,
-                        "anna@example.com",
-                        "380123456789",
-                        dates,
-                        List.of("size must be between 3 and 18")
-                },
-                {
-                        roomId,
-                        "Anna",
-                        "Sm",
-                        depositPaid,
-                        "anna@example.com",
-                        "380123456789",
-                        dates,
-                        List.of("size must be between 3 and 30")
-                },
-                {
-                        roomId,
-                        "Anna",
-                        "Smith",
-                        depositPaid,
-                        "",
-                        "380123456789",
-                        dates,
-                        List.of("must not be empty")
-                },
-                {
-                        roomId,
-                        "Anna",
-                        "Smith",
-                        depositPaid,
-                        "not-an-email",
-                        "380123456789",
-                        dates,
-                        List.of("must be a well-formed email address")
-                },
-                {
-                        roomId,
-                        "Anna",
-                        "Smith",
-                        depositPaid,
-                        "anna@example.com",
-                        "",
-                        dates,
-                        List.of("must not be empty", "size must be between 11 and 21")
-                },
-                {
-                        roomId,
-                        "Anna",
-                        "Smith",
-                        depositPaid,
-                        "anna@example.com",
-                        "123",
-                        dates,
-                        List.of("size must be between 11 and 21")
+                        "All fields valid",
+                        "Anna", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        List.of()
                 }
         };
     }
 
-    @DataProvider(name = "maliciousInputProvider")
-    public Object[][] maliciousInputProvider() {
+    @DataProvider(name = "specialCharacters")
+    public Object[][] specialCharacters() {
         return new Object[][]{
-                {"'; DROP TABLE u--"},          // classic drop
-                {"admin' OR '1'='1"},           // auth bypass
-                {"Robert');--"},                // Bobby Tables
-                {"0 OR 1=1"},                   // boolean condition
-                {"../etc/passwd"},             // path traversal
-                {"admin\"--"},                  // escape quote
-                {"‘ OR ‘x’=’x"},                // unicode quote
+                {"O'Brien", "McDonald's"},
+                {"Anne-Marie", "Smith-Jones"},
+                {"José", "François"},
+                {"Müller", "Schröder"}
         };
     }
-
 }

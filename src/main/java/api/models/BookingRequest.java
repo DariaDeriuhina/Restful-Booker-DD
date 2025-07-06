@@ -12,11 +12,11 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class BookingRequest {
-    public int roomid;
-    public String firstname;
-    public String lastname;
-    public boolean depositpaid;
-    public String email;
-    public String phone;
-    public BookingDates bookingdates;
+    private int roomid;
+    private String firstname;
+    private String lastname;
+    private boolean depositpaid;
+    private String email;
+    private String phone;
+    private BookingDates bookingdates;
 }

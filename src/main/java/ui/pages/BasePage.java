@@ -1,6 +1,7 @@
 package ui.pages;
 
 import com.codeborne.selenide.Selenide;
+import io.qameta.allure.Step;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public abstract class BasePage extends BaseElement {
     protected static final Logger logger = LoggerFactory.getLogger(BasePage.class);
     public Header header = new Header();
 
+    @Step("Open page {}")
     protected void openPage(String url) {
         Selenide.open(url);
         logger.info("Page opened: {}", url);

@@ -1,6 +1,7 @@
 package ui.components.sections;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -29,6 +30,7 @@ public class ContactSection extends BaseSection {
         confirmationCardBody = section.$(".card-body");
     }
 
+    @Step("Fill the form")
     public ContactSection fillForm(String name, String email, String phone, String subject, String message) {
         nameField.setValue(name);
         emailField.setValue(email);
