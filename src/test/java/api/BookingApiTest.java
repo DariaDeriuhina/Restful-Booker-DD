@@ -33,7 +33,7 @@ public class BookingApiTest extends BaseApiTest {
     public void roomIsUnavailableAfterBookingTest() {
         var checkIn = DateUtils.generateFutureDate(10);
         var checkOut = checkIn.plusDays(1);
-        int roomId = new Random().nextInt(1, 9);
+        var roomId = new Random().nextInt(1, 9);
 
         var bookingResult = bookingFacade.bookDefault(roomId, checkIn, checkOut);
         assertThat(bookingResult.isSuccess()).isTrue();
@@ -87,7 +87,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("POST /booking without booking dates should not be completed")
     @Test(groups = {API, REGRESSION})
     public void bookingWithoutDatesTest() {
-        int roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);;
         var bookingResult = bookingFacade.bookRoomWithoutDates(roomId);
         assertThat(bookingResult.statusCode()).isEqualTo(500);
         assertThat(bookingResult.hasExactlyErrors(List.of("Failed to create booking"))).isTrue();
@@ -96,7 +96,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("BUG: POST /booking should reject booking with check-in date in the past")
     @Test(groups = {API, REGRESSION})
     public void bookingInPastShouldBeRejectedTest() {
-        int roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);;
         var checkIn = DateUtils.generatePastDate(1, 100);
         var checkOut = checkIn.plusDays(1);
 
@@ -108,7 +108,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("Only one of two simultaneous bookings for the same room and date should succeed")
     @Test(groups = {API, REGRESSION})
     public void concurrentBookingTest() throws Exception {
-        int roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);;
         var checkIn = DateUtils.generateFutureDate(10, 20);
         var checkOut = DateUtils.generateFutureDate(21, 30);
 
@@ -147,7 +147,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("BUG: API should not accept dangerous payloads in firstname")
     @Test(groups = {API, REGRESSION}, dataProvider = "maliciousInputProvider", dataProviderClass = BookingTestData.class)
     public void sqlInjectionBookingFormTest(String testCase, String maliciousInput) {
-        int roomId = new Random().nextInt(1, 9);
+        var roomId = new Random().nextInt(1, 9);
         var checkIn = DateUtils.generatePastDate(10, 100);
         var checkOut = checkIn.plusDays(1);
 
@@ -176,7 +176,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("Special characters in names should be handled properly")
     @Test(groups = {API, REGRESSION}, dataProvider = "specialCharacters", dataProviderClass = BookingTestData.class)
     public void specialCharactersInNamesTest(String firstName, String lastName) {
-        int roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);;
         var checkIn = DateUtils.generateFutureDate(10, 100);
         var checkOut = checkIn.plusDays(1);
             var request = BookingRequest.builder()

@@ -23,7 +23,6 @@ public class HomePageTest extends BaseUiTest {
     @Test(groups = {UI, REGRESSION}, dataProvider = "invalidBookingDates", dataProviderClass = BookingTestData.class)
     public void invalidBookingDatesShouldDisableBooking(String checkIn, String checkOut) {
         var bookingSection = homePage.header().clickBooking();
-
         bookingSection
                 .applyCheckInDate(checkIn)
                 .applyCheckOutDate(checkOut)
@@ -31,7 +30,6 @@ public class HomePageTest extends BaseUiTest {
 
         var roomSection = new RoomsSection();
         var firstRoom = roomSection.getFirstRoomCard();
-
         firstRoom.bookNowBtn()
                 .shouldBe(visible)
                 .shouldHave(attribute("disabled"));
