@@ -14,7 +14,7 @@ public class AuthApiService {
 
     @Step("Login with api")
     public Response login(String username, String password) {
-        Map<String, String> credentials = new HashMap<>();
+        var credentials = new HashMap<>();
         credentials.put("username", username);
         credentials.put("password", password);
 
@@ -29,7 +29,7 @@ public class AuthApiService {
     }
 
     public Response validate(String token) {
-        Map<String, String> tokenBody = Map.of("token", token);
+        var tokenBody = Map.of("token", token);
 
         return apiClient.execute(
                 ApiRequest.<Response>builder()

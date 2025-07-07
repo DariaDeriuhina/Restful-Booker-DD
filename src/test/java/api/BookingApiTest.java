@@ -109,8 +109,8 @@ public class BookingApiTest extends BaseApiTest {
     @Test(groups = {API, REGRESSION})
     public void concurrentBookingTest() throws Exception {
         var roomId = new Random().nextInt(1, 9);;
-        var checkIn = DateUtils.generateFutureDate(10, 20);
-        var checkOut = DateUtils.generateFutureDate(21, 30);
+        var checkIn = DateUtils.generateFutureDate(1, 20);
+        var checkOut = checkIn.plusDays(1);
 
         var executor = Executors.newFixedThreadPool(2);
         try {
@@ -177,7 +177,7 @@ public class BookingApiTest extends BaseApiTest {
     @Test(groups = {API, REGRESSION}, dataProvider = "specialCharacters", dataProviderClass = BookingTestData.class)
     public void specialCharactersInNamesTest(String firstName, String lastName) {
         var roomId = new Random().nextInt(1, 9);;
-        var checkIn = DateUtils.generateFutureDate(10, 100);
+        var checkIn = DateUtils.generateFutureDate(21, 99);
         var checkOut = checkIn.plusDays(1);
             var request = BookingRequest.builder()
                     .roomid(roomId)

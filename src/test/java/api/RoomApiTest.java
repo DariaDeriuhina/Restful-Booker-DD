@@ -49,9 +49,4 @@ public class RoomApiTest extends BaseApiTest {
 
         assertThat(actualRoom).isEqualTo(expectedRoom);
     }
-
-    @Test
-    public void failingTest() {
-        Assert.assertTrue(false, "Test should fail and be retried");
-    }
 }

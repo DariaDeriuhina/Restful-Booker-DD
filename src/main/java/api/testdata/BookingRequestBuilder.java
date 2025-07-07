@@ -62,7 +62,7 @@ public class BookingRequestBuilder {
     }
 
     public BookingRequest build() {
-        BookingDates bookingDates = (checkin != null && checkout != null)
+        var bookingDates = (checkin != null && checkout != null)
                 ? new BookingDates(checkin, checkout)
                 : null;
 

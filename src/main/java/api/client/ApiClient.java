@@ -67,7 +67,7 @@ public class ApiClient {
 
     @SuppressWarnings("unchecked")
     public <T> T execute(ApiRequest<T> request) {
-        RequestSpecification spec = given().spec(baseSpec);
+        var spec = given().spec(baseSpec);
 
         if (!request.getHeaders().isEmpty()) {
             spec.headers(request.getHeaders());
@@ -82,7 +82,7 @@ public class ApiClient {
             spec.body(request.getBody());
         }
 
-        Response response = spec.request(request.getMethod(), request.getEndpoint());
+        var response = spec.request(request.getMethod(), request.getEndpoint());
         if (request.getResponseType() != null && request.getResponseType() != Response.class) {
             return response.as(request.getResponseType());
         }
@@ -90,7 +90,7 @@ public class ApiClient {
     }
 
     public <T> List<T> executeForList(ApiRequest<Response> request, String jsonPath, Class<T> clazz) {
-        Response response = this.execute(request);
+        var response = this.execute(request);
         return response.jsonPath().getList(jsonPath, clazz);
     }
 

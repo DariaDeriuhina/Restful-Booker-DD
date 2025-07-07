@@ -40,7 +40,7 @@ public class RoomApiService {
     }
 
     public List<BookingAvailability> getRoomAvailability(int roomId) {
-        BookingAvailability[] availability = apiClient.execute(
+        var availability = apiClient.execute(
                 ApiRequest.<BookingAvailability[]>builder()
                         .method(Method.GET)
                         .endpoint("/report/room/{roomId}")

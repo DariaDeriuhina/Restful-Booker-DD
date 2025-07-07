@@ -2,6 +2,7 @@ package test_data;
 
 import api.models.BookingDates;
 import org.testng.annotations.DataProvider;
+import utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,28 +31,30 @@ public class BookingTestData {
     @DataProvider(name = "maliciousInputProvider")
     public Object[][] maliciousInputProvider() {
         return new Object[][]{
-                {"SQL Injection - DROP", "'; DROP TABLE u--"},          // 17 chars
-                {"SQL Injection - OR", "admin' OR '1'='1"},            // 16 chars
-                {"SQL Injection - Bobby", "Robert');--"},              // 11 chars
-                {"SQL Injection - Bool", "' OR 1=1--"},                // 10 chars
-                {"Path Traversal", "../etc/passwd"},                   // 13 chars
-                {"XSS Script", "<script>alert()"},                     // 15 chars
-                {"Command Injection", "; rm -rf /"},                   // 10 chars
-                {"LDAP Injection", "*)(uid=*))(|(uid*"},               // 17 chars
-                {"XML Injection", "<?xml><foo>&xxe;"},                 // 16 chars
-                {"NoSQL Injection", "{'$ne': null}"},                  // 13 chars
-                {"Unicode bypass", "' OR 'x'='x"},                     // 11 chars
-                {"Null byte", "admin\0"},                              // 6 chars
-                {"HTML tags", "<h1>hack</h1>"},                        // 13 chars
-                {"JS event", "onclick=alert(1)"},                      // 16 chars
-                {"SQL comment", "admin'--"},                           // 8 chars
-                {"Escape quote", "admin\"--"}                          // 9 chars
+                {"SQL Injection - DROP", "'; DROP TABLE u--"},
+                {"SQL Injection - OR", "admin' OR '1'='1"},
+                {"SQL Injection - Bobby", "Robert');--"},
+                {"SQL Injection - Bool", "' OR 1=1--"},
+                {"Path Traversal", "../etc/passwd"},
+                {"XSS Script", "<script>alert()"},
+                {"Command Injection", "; rm -rf /"},
+                {"LDAP Injection", "*)(uid=*))(|(uid*"},
+                {"XML Injection", "<?xml><foo>&xxe;"},
+                {"NoSQL Injection", "{'$ne': null}"},
+                {"Unicode bypass", "' OR 'x'='x"},
+                {"Null byte", "admin\0"},
+                {"HTML tags", "<h1>hack</h1>"},
+                {"JS event", "onclick=alert(1)"},
+                {"SQL comment", "admin'--"},
+                {"Escape quote", "admin\"--"}
         };
     }
 
     @DataProvider(name = "bookingFormData")
     public Object[][] bookingFieldValidation() {
-        var validDates = new BookingDates("2024-01-01", "2024-01-05");
+        var checkIn = DateUtils.generateFutureDate(100, 1000);
+        var checkOut = checkIn.plusDays(1);
+        var validDates = new BookingDates(checkIn.toString(), checkOut.toString());
 
         return new Object[][]{
                 // Firstname validation

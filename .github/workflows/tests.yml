@@ -21,7 +21,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run Tests (don't fail the job)
-        run: mvn clean verify -DbrowserName=chrome -Dheadless=true || true
+        run: mvn clean verify -DbrowserName=chrome -Dheadless=true -Dselenide.browserSize=1920x1080 || true
 
       - name: Generate Allure Report
         run: mvn io.qameta.allure:allure-maven:2.10.0:report

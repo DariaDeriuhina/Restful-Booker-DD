@@ -74,7 +74,6 @@ public class ApiRequest<T> {
             return this;
         }
 
-        // Fluent methods for adding individual items
         public Builder<T> withHeader(String key, String value) {
             this.headers.put(key, value);
             return this;

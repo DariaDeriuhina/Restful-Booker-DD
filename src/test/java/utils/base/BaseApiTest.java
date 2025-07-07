@@ -17,7 +17,7 @@ public abstract class BaseApiTest {
         var response = new AuthApiService().login("admin", "password");
         authToken = response.jsonPath().getString("token");
 
-        ApiConfig config = ApiConfig.builder()
+        var config = ApiConfig.builder()
                 .defaultCookies(Map.of("token", authToken))
                 .enableAllureReports(true)
                 .build();
