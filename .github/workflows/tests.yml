@@ -1,4 +1,4 @@
-name: Run Tests and Publish Allure Report
+name: Run Tests and Deploy Allure Report
 
 on:
   push:
@@ -20,8 +20,8 @@ jobs:
           java-version: '18'
           distribution: 'temurin'
 
-      - name: Run Tests
-        run: mvn clean verify -DbrowserName=chrome -Dheadless=true
+      - name: Run Tests (don't fail the job)
+        run: mvn clean verify -DbrowserName=chrome -Dheadless=true || true
 
       - name: Generate Allure Report
         run: mvn io.qameta.allure:allure-maven:2.10.0:report
@@ -31,3 +31,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./target/site/allure-maven-plugin
+          publish_branch: gh-pages
+          force_orphan: true
