@@ -1,4 +1,4 @@
-name: Run Tests and Upload Allure Report
+name: Run Tests and Publish Allure Report
 
 on:
   push:
@@ -20,23 +20,14 @@ jobs:
           java-version: '18'
           distribution: 'temurin'
 
-      - name: Set up Maven
-        run: mvn --version
-
       - name: Run Tests
         run: mvn clean test -DbrowserName=chrome -Dheadless=true
 
       - name: Generate Allure Report
         run: mvn io.qameta.allure:allure-maven:2.10.0:report
 
-      - name: Upload Allure Report
-        uses: actions/upload-artifact@v4
+      - name: Deploy Allure Report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          name: allure-report
-          path: target/site/allure-maven-plugin
-
-      - name: Upload Allure Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-results
-          path: target/allure-results
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/allure-maven-plugin
