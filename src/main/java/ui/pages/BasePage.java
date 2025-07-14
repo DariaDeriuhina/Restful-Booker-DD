@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 import ui.elements.BaseElement;
 import ui.components.Header;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$$;
 
 @Getter
@@ -26,6 +25,8 @@ public abstract class BasePage extends BaseElement {
     }
 
     protected void clickButtonByText(String buttonText) {
-        $$("button").findBy(text(buttonText)).shouldBe(visible).click();
+        var button = $$("button").findBy(text(buttonText));
+        scrollToElementCenter(button);
+        button.shouldBe(visible).shouldBe(enabled).click();
     }
 }

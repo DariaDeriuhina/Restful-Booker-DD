@@ -79,6 +79,7 @@ public class BookingPage extends BasePage {
     }
 
     public String getConfirmationDates() {
+        scrollToElementCenter(confirmationCardBodyDates);
         return confirmationCardBodyDates.getText();
     }
 }

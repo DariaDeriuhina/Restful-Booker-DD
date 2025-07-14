@@ -23,7 +23,8 @@
         <webdrivermanager.version>6.1.0</webdrivermanager.version>
         <allure.version>2.29.0</allure.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <aspectj.version>1.9.24</aspectj.version>
+        <aspectj.version>1.9.21</aspectj.version>
+        <aspectjweaver.version>1.9.21</aspectjweaver.version>
         <lombok.version>1.18.30</lombok.version>
     </properties>
 
@@ -168,7 +169,7 @@
                     <dependency>
                         <groupId>org.aspectj</groupId>
                         <artifactId>aspectjweaver</artifactId>
-                        <version>${aspectj.version}</version>
+                        <version>${aspectjweaver.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

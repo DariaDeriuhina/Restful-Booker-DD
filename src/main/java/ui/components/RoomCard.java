@@ -3,11 +3,12 @@ package ui.components;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import ui.elements.BaseElement;
 import ui.pages.BookingPage;
 
 @Getter
 @Accessors(fluent = true)
-public class RoomCard {
+public class RoomCard extends BaseElement {
    private final SelenideElement root;
    private final SelenideElement roomName;
    private final SelenideElement roomPrice;
@@ -29,7 +30,8 @@ public class RoomCard {
     }
 
     public BookingPage clickBookNow() {
-        root.$("a.btn").click();
+        scrollToElementCenter(bookNowBtn);
+        bookNowBtn.click();
         return new BookingPage();
     }
 }
