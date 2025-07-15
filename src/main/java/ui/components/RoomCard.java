@@ -16,17 +16,17 @@ public class RoomCard extends BaseElement {
 
    public RoomCard(SelenideElement root) {
        this.root = root;
-       roomName = root.$(".card-title");
-       roomPrice = root.$(".fw-bold");
+       roomName = root.$(".room-name");
+       roomPrice = root.$(".room-price");
        bookNowBtn = root.$("a.btn");
    }
 
     public String getRoomName() {
-        return root.$(".room-name").getText();
+        return roomName.getText();
     }
 
     public String getPrice() {
-        return root.$(".room-price").getText();
+        return roomPrice.getText();
     }
 
     public BookingPage clickBookNow() {

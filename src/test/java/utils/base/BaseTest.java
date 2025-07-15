@@ -4,18 +4,17 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
+import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import utils.EnvProperties;
 import utils.GridStarter;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
 import static utils.EnvProperties.BASE_URL;
 
+@Slf4j
 @Listeners({utils.RetryListener.class})
 public abstract class BaseTest {
-    protected static final Logger logger = LoggerFactory.getLogger(BaseTest.class);
 
     @BeforeSuite
     public void setUpAllure() {
@@ -43,12 +42,12 @@ public abstract class BaseTest {
 
         GridStarter.setupGridForRemoteExecution();
 
-        logger.info("=== Test Configuration ===");
-        logger.info("Run mode: {}", runMode);
-        logger.info("Browser: {} | Headless: {}", browserName, headless);
-        logger.info("URL: {}", Configuration.remote != null ? Configuration.remote : "local");
-        logger.info("Base URL: {}", BASE_URL);
-        logger.info("==========================");
+        log.info("=== Test Configuration ===");
+        log.info("Run mode: {}", runMode);
+        log.info("Browser: {} | Headless: {}", browserName, headless);
+        log.info("URL: {}", Configuration.remote != null ? Configuration.remote : "local");
+        log.info("Base URL: {}", BASE_URL);
+        log.info("==========================");
         Selenide.open(BASE_URL);
 
         if (!headless && Configuration.remote == null) {
@@ -59,10 +58,10 @@ public abstract class BaseTest {
     @AfterMethod
     public void tearDown() {
         try {
-            logger.info("Closing browser after test.");
+            log.info("Closing browser after test.");
             closeWebDriver();
         } catch (Exception e) {
-            logger.warn("Error during tearDown: {}", e.getMessage());
+            log.warn("Error during tearDown: {}", e.getMessage());
         }
     }
 }

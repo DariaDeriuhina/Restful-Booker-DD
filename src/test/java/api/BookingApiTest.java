@@ -7,7 +7,7 @@ import api.testdata.DateRange;
 import io.qameta.allure.Description;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
-import test_data.BookingTestData;
+import testdata.BookingTestData;
 import utils.DateUtils;
 import utils.base.BaseApiTest;
 
@@ -56,7 +56,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("Multiple bookings on different dates should all appear in availability report")
     @Test(groups = {API, REGRESSION})
     public void multipleBookingsTest() {
-        var roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);
         var dateRanges = List.of(
                 new DateRange(10, 12),
                 new DateRange(13, 15),
@@ -87,7 +87,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("POST /booking without booking dates should not be completed")
     @Test(groups = {API, REGRESSION})
     public void bookingWithoutDatesTest() {
-        var roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);
         var bookingResult = bookingFacade.bookRoomWithoutDates(roomId);
         assertThat(bookingResult.statusCode()).isEqualTo(500);
         assertThat(bookingResult.hasExactlyErrors(List.of("Failed to create booking"))).isTrue();
@@ -96,7 +96,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("BUG: POST /booking should reject booking with check-in date in the past")
     @Test(groups = {API, REGRESSION})
     public void bookingInPastShouldBeRejectedTest() {
-        var roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);
         var checkIn = DateUtils.generatePastDate(1, 100);
         var checkOut = checkIn.plusDays(1);
 
@@ -108,7 +108,7 @@ public class BookingApiTest extends BaseApiTest {
     @Description("Only one of two simultaneous bookings for the same room and date should succeed")
     @Test(groups = {API, REGRESSION})
     public void concurrentBookingTest() throws Exception {
-        var roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);
         var checkIn = DateUtils.generateFutureDate(1, 20);
         var checkOut = checkIn.plusDays(1);
 
@@ -148,7 +148,7 @@ public class BookingApiTest extends BaseApiTest {
     @Test(groups = {API, REGRESSION}, dataProvider = "maliciousInputProvider", dataProviderClass = BookingTestData.class)
     public void sqlInjectionBookingFormTest(String testCase, String maliciousInput) {
         var roomId = new Random().nextInt(1, 9);
-        var checkIn = DateUtils.generatePastDate(10, 100);
+        var checkIn = DateUtils.generatePastDate(1, 1000);
         var checkOut = checkIn.plusDays(1);
 
         var result = bookingFacade.bookWithMaliciousName(roomId, checkIn, checkOut, maliciousInput);
@@ -176,23 +176,23 @@ public class BookingApiTest extends BaseApiTest {
     @Description("Special characters in names should be handled properly")
     @Test(groups = {API, REGRESSION}, dataProvider = "specialCharacters", dataProviderClass = BookingTestData.class)
     public void specialCharactersInNamesTest(String firstName, String lastName) {
-        var roomId = new Random().nextInt(1, 9);;
+        var roomId = new Random().nextInt(1, 9);
         var checkIn = DateUtils.generateFutureDate(21, 99);
         var checkOut = checkIn.plusDays(1);
-            var request = BookingRequest.builder()
-                    .roomid(roomId)
-                    .firstname(firstName)
-                    .lastname(lastName)
-                    .depositpaid(true)
-                    .email("test@example.com")
-                    .phone("12345678901")
-                    .bookingdates(new BookingDates(
-                            checkIn.toString(), checkOut.toString()
-                    ))
-                    .build();
+        var request = BookingRequest.builder()
+                .roomid(roomId)
+                .firstname(firstName)
+                .lastname(lastName)
+                .depositpaid(true)
+                .email("test@example.com")
+                .phone("12345678901")
+                .bookingdates(new BookingDates(
+                        checkIn.toString(), checkOut.toString()
+                ))
+                .build();
 
-            var result = bookingFacade.book(request);
+        var result = bookingFacade.book(request);
 
-            assertThat(result.isSuccess()).isTrue();
+        assertThat(result.isSuccess()).isTrue();
     }
 }

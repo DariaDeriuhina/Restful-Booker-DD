@@ -4,8 +4,8 @@ import io.qameta.allure.Description;
 import org.testng.annotations.Test;
 import ui.components.AlertMessage;
 import ui.components.sections.RoomsSection;
-import test_data.BookingTestData;
-import test_data.ContactTestData;
+import testdata.BookingTestData;
+import testdata.ContactTestData;
 import utils.ScrollUtils;
 import utils.base.BaseUiTest;
 

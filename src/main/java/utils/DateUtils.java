@@ -1,5 +1,7 @@
 package utils;
 
+import api.models.BookingDates;
+
 import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,5 +26,11 @@ public class DateUtils {
 
     public static LocalDate generatePastDate(int fromDays, int toDays) {
         return generateRandomDate(-toDays, -fromDays);
+    }
+
+    public static BookingDates generateRandomDates() {
+        var checkIn = DateUtils.generateFutureDate(1, 365);
+        var checkOut = checkIn.plusDays(1);
+        return new BookingDates(checkIn.toString(), checkOut.toString());
     }
 }

@@ -11,7 +11,7 @@ public class BookingFacade {
     private final BookingApiService bookingApi = new BookingApiService();
 
     public BookingResult book(UserInfo user, int roomId, BookingDates period) {
-        var request = BookingRequestBuilder.newRequest()
+        var request = BookingRequestBuilder.builder()
                 .forRoom(roomId)
                 .by(user.firstname(), user.lastname())
                 .withEmail(user.email())
@@ -32,7 +32,7 @@ public class BookingFacade {
 
     @Step("Book the room with api without dates")
     public BookingResult bookRoomWithoutDates(int roomId) {
-        var request = BookingRequestBuilder.newRequest()
+        var request = BookingRequestBuilder.builder()
                 .forRoom(roomId)
                 .by("NoDate", "User")
                 .withEmail("nodate@example.com")
@@ -46,7 +46,7 @@ public class BookingFacade {
 
     @Step("Book the room with api with malicious name")
     public BookingResult bookWithMaliciousName(int roomId, LocalDate checkIn, LocalDate checkOut, String maliciousName) {
-        var request = BookingRequestBuilder.newRequest()
+        var request = BookingRequestBuilder.builder()
                 .forRoom(roomId)
                 .by(maliciousName, "Safe")
                 .withEmail("safe@example.com")

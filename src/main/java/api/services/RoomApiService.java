@@ -2,21 +2,29 @@ package api.services;
 
 import api.client.ApiClient;
 import api.client.ApiRequest;
+import api.client.ApiService;
 import api.models.BookingAvailability;
 import api.models.Room;
 import io.qameta.allure.Step;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class RoomApiService {
-    private final ApiClient apiClient = new ApiClient();
+    private final ApiService api;
+
+    public RoomApiService() {
+        this(ApiClient.getInstance());
+    }
+
+    public RoomApiService(ApiService api) {
+        this.api = api;
+    }
 
     @Step("Get all rooms")
     public List<Room> getAllRooms() {
-        return apiClient.executeForList(
+        return api.executeList(
                 ApiRequest.<Response>builder()
                         .method(Method.GET)
                         .endpoint("/room")
@@ -29,7 +37,7 @@ public class RoomApiService {
 
     @Step("Get room by {}")
     public Room getRoomById(int id) {
-        return apiClient.execute(
+        return api.execute(
                 ApiRequest.<Room>builder()
                         .method(Method.GET)
                         .endpoint("/room/{id}")
@@ -40,7 +48,7 @@ public class RoomApiService {
     }
 
     public List<BookingAvailability> getRoomAvailability(int roomId) {
-        var availability = apiClient.execute(
+        var availability = api.execute(
                 ApiRequest.<BookingAvailability[]>builder()
                         .method(Method.GET)
                         .endpoint("/report/room/{roomId}")
@@ -48,6 +56,6 @@ public class RoomApiService {
                         .responseType(BookingAvailability[].class)
                         .build()
         );
-        return Arrays.asList(availability);
+        return List.of(availability);
     }
 }

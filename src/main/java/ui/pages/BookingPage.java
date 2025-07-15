@@ -2,6 +2,9 @@ package ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import ui.components.BookingForm;
 
 import java.time.LocalDate;
 
@@ -9,28 +12,15 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+@Getter
+@Accessors(fluent = true)
 public class BookingPage extends BasePage {
-    private final SelenideElement firstNameField;
-    private final SelenideElement lastNameField;
-    private final SelenideElement emailField;
-    private final SelenideElement phoneField;
+    private final BookingForm bookingForm;
     private final SelenideElement confirmationCardBodyDates;
 
     public BookingPage() {
-        firstNameField = $("[placeholder='Firstname']");
-        lastNameField = $("[placeholder='Lastname']");
-        emailField = $("[placeholder='Email']");
-        phoneField = $("[placeholder='Phone']");
+        this.bookingForm = new BookingForm();
         confirmationCardBodyDates = $(".booking-card").$(".text-center");
-    }
-
-    @Step("Fill the form with: {}, {}, {}")
-    public BookingPage fillForm(String firstName, String lastName, String email, String phone) {
-        firstNameField.setValue(firstName);
-        lastNameField.setValue(lastName);
-        emailField.setValue(email);
-        phoneField.setValue(phone);
-        return this;
     }
 
     @Step("Click Reserve Now")
@@ -57,27 +47,6 @@ public class BookingPage extends BasePage {
         openPage(url);
         return this;
     }
-
-    public BookingPage assertFirstName(String expected) {
-        firstNameField.shouldHave(value(expected).because("First name should persist after tab switch"));
-        return this;
-    }
-
-    public BookingPage assertLastName(String expected) {
-        lastNameField.shouldHave(value(expected).because("Last name should persist after tab switch"));
-        return this;
-    }
-
-    public BookingPage assertEmail(String expected) {
-        emailField.shouldHave(value(expected).because("Email should persist after tab switch"));
-        return this;
-    }
-
-    public BookingPage assertPhone(String expected) {
-        phoneField.shouldHave(value(expected).because("Phone should persist after tab switch"));
-        return this;
-    }
-
     public String getConfirmationDates() {
         scrollToElementCenter(confirmationCardBodyDates);
         return confirmationCardBodyDates.getText();

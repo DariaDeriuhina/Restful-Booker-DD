@@ -15,7 +15,7 @@ public class BookingRequestBuilder {
 
     private BookingRequestBuilder() {}
 
-    public static BookingRequestBuilder newRequest() {
+    public static BookingRequestBuilder builder() {
         return new BookingRequestBuilder();
     }
 

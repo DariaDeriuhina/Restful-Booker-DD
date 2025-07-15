@@ -51,6 +51,7 @@ public class BookingSection extends BaseSection {
     }
 
     public RoomsSection clickOnCheckAvailability() {
+        scrollToElementCenter(checkAvailabilityBtn);
         checkAvailabilityBtn.click();
         return new RoomsSection();
     }

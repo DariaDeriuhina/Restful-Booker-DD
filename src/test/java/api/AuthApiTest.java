@@ -2,9 +2,8 @@ package api;
 
 import api.services.AuthApiService;
 import io.qameta.allure.Description;
-import org.testng.Assert;
 import org.testng.annotations.Test;
-import test_data.AuthTestData;
+import testdata.AuthTestData;
 import utils.base.BaseApiTest;
 
 import static org.assertj.core.api.Assertions.assertThat;

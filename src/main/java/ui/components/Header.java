@@ -24,9 +24,9 @@ public class Header extends BaseElement {
     }
 
     @Step("Click on 'Rooms' link in header")
-    public void clickRooms() {
+    public RoomsSection clickRooms() {
         roomsLink.click();
-        new RoomsSection();
+        return new RoomsSection();
     }
     @Step("Click on 'Booking' link in header")
     public BookingSection clickBooking() {
@@ -35,14 +35,14 @@ public class Header extends BaseElement {
     }
 
     @Step("Click on 'Contact' link in header")
-    public void clickContact() {
+    public ContactSection clickContact() {
         contactLink.click();
-        new ContactSection();
+        return new ContactSection();
     }
 
     @Step("Click on 'Location' link in header")
-    public void clickLocation() {
+    public LocationSection clickLocation() {
         locationLink.click();
-        new LocationSection();
+        return new LocationSection();
     }
 }

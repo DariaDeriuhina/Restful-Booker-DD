@@ -1,11 +1,11 @@
-package test_data;
+package testdata;
 
-import api.models.BookingDates;
 import org.testng.annotations.DataProvider;
-import utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static utils.DateUtils.generateRandomDates;
 
 public class BookingTestData {
 
@@ -52,118 +52,114 @@ public class BookingTestData {
 
     @DataProvider(name = "bookingFormData")
     public Object[][] bookingFieldValidation() {
-        var checkIn = DateUtils.generateFutureDate(100, 1000);
-        var checkOut = checkIn.plusDays(1);
-        var validDates = new BookingDates(checkIn.toString(), checkOut.toString());
-
         return new Object[][]{
                 // Firstname validation
                 {
                         "Empty firstname",
-                        "", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 18", "Firstname should not be blank")
                 },
                 {
                         "Firstname too short",
-                        "An", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "An", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 18")
                 },
                 {
                         "Firstname at min boundary",
-                        "Ann", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "Ann", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of()
                 },
                 {
                         "Firstname at max boundary",
-                        "A".repeat(18), "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "A".repeat(18), "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of()
                 },
                 {
                         "Firstname too long",
-                        "A".repeat(19), "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "A".repeat(19), "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 18")
                 },
 
                 // Lastname validation
                 {
                         "Empty lastname",
-                        "Anna", "", true, "anna@example.com", "380123456789", validDates,
+                        "Anna", "", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 30", "Lastname should not be blank")
                 },
                 {
                         "Lastname too short",
-                        "Anna", "Sm", true, "anna@example.com", "380123456789", validDates,
+                        "Anna", "Sm", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 30")
                 },
                 {
                         "Lastname at max boundary",
-                        "Anna", "S".repeat(30), true, "anna@example.com", "380123456789", validDates,
+                        "Anna", "S".repeat(30), true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of()
                 },
                 {
                         "Lastname too long",
-                        "Anna", "S".repeat(31), true, "anna@example.com", "380123456789", validDates,
+                        "Anna", "S".repeat(31), true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of("size must be between 3 and 30")
                 },
 
                 // Email validation
                 {
                         "Empty email",
-                        "Anna", "Smith", true, "", "380123456789", validDates,
+                        "Anna", "Smith", true, "", "380123456789", generateRandomDates(),
                         List.of("must not be empty")
                 },
                 {
                         "Invalid email - no @",
-                        "Anna", "Smith", true, "invalidemail", "380123456789", validDates,
+                        "Anna", "Smith", true, "invalidemail", "380123456789", generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - no domain",
-                        "Anna", "Smith", true, "test@", "380123456789", validDates,
+                        "Anna", "Smith", true, "test@", "380123456789", generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - no local part",
-                        "Anna", "Smith", true, "@example.com", "380123456789", validDates,
+                        "Anna", "Smith", true, "@example.com", "380123456789", generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - double @",
-                        "Anna", "Smith", true, "test@@example.com", "380123456789", validDates,
+                        "Anna", "Smith", true, "test@@example.com", "380123456789", generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
 
                 // Phone validation
                 {
                         "Empty phone",
-                        "Anna", "Smith", true, "anna@example.com", "", validDates,
+                        "Anna", "Smith", true, "anna@example.com", "", generateRandomDates(),
                         List.of("must not be empty", "size must be between 11 and 21")
                 },
                 {
                         "Phone too short",
-                        "Anna", "Smith", true, "anna@example.com", "1234567890", validDates,
+                        "Anna", "Smith", true, "anna@example.com", "1234567890", generateRandomDates(),
                         List.of("size must be between 11 and 21")
                 },
                 {
                         "Phone at min boundary",
-                        "Anna", "Smith", true, "anna@example.com", "12345678901", validDates,
+                        "Anna", "Smith", true, "anna@example.com", "12345678901", generateRandomDates(),
                         List.of()
                 },
                 {
                         "Phone at max boundary",
-                        "Anna", "Smith", true, "anna@example.com", "1".repeat(21), validDates,
+                        "Anna", "Smith", true, "anna@example.com", "1".repeat(21), generateRandomDates(),
                         List.of()
                 },
                 {
                         "Phone too long",
-                        "Anna", "Smith", true, "anna@example.com", "1".repeat(22), validDates,
+                        "Anna", "Smith", true, "anna@example.com", "1".repeat(22), generateRandomDates(),
                         List.of("size must be between 11 and 21")
                 },
 
                 // Multiple errors
                 {
                         "All fields empty",
-                        "", "", true, "", "", validDates,
+                        "", "", true, "", "", generateRandomDates(),
                         List.of(
                                 "must not be empty",
                                 "size must be between 3 and 18",
@@ -178,7 +174,7 @@ public class BookingTestData {
                 // Valid booking
                 {
                         "All fields valid",
-                        "Anna", "Smith", true, "anna@example.com", "380123456789", validDates,
+                        "Anna", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
                         List.of()
                 }
         };

@@ -25,9 +25,5 @@ public class ApiConfig {
     private boolean enableAllureReports = true;
 
     @Builder.Default
-    private boolean enableMetrics = true;
-
-    @Builder.Default
     private Map<String,String> defaultCookies = new HashMap<>();
-
 }

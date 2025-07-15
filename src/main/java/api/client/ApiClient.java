@@ -1,29 +1,28 @@
 package api.client;
 
-import api.client.interceptors.MetricsInterceptor;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.Filter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-@Slf4j
-public class ApiClient {
+public class ApiClient implements ApiService {
+    private static final ApiClient instance = new ApiClient();
+
+    public static ApiService getInstance() {
+        return instance;
+    }
+
     @Setter
     private static ApiConfig globalConfig;
-
     private final ApiConfig config;
     private final RequestSpecification baseSpec;
-    private final List<Filter> filters;
 
     public ApiClient() {
         this(globalConfig != null ? globalConfig : ApiConfig.builder().build());
@@ -31,17 +30,8 @@ public class ApiClient {
 
     public ApiClient(ApiConfig config) {
         this.config = config;
-        this.filters = setupFilters();
         this.baseSpec = buildBaseSpec();
         configureRestAssured();
-    }
-
-    private List<Filter> setupFilters() {
-        List<Filter> filterList = new ArrayList<>();
-        if (config.isEnableMetrics()) {
-            filterList.add(new MetricsInterceptor());
-        }
-        return filterList;
     }
 
     private RequestSpecification buildBaseSpec() {
@@ -54,7 +44,6 @@ public class ApiClient {
             config.getDefaultCookies().forEach((k, v) -> builder.addHeader("Cookie", k + "=" + v));
         }
         builder.addFilter(new AllureRestAssured());
-        filters.forEach(builder::addFilter);
         return builder.build();
     }
 
@@ -66,6 +55,7 @@ public class ApiClient {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public <T> T execute(ApiRequest<T> request) {
         var spec = given().spec(baseSpec);
 
@@ -89,9 +79,9 @@ public class ApiClient {
         return (T) response;
     }
 
-    public <T> List<T> executeForList(ApiRequest<Response> request, String jsonPath, Class<T> clazz) {
+    @Override
+    public <T> List<T> executeList(ApiRequest<Response> request, String jsonPath, Class<T> clazz) {
         var response = this.execute(request);
         return response.jsonPath().getList(jsonPath, clazz);
     }
-
 }

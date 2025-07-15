@@ -1,7 +1,6 @@
 package ui;
 
 import io.qameta.allure.*;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 import utils.BrowserUtils;
 import utils.ScrollUtils;
@@ -26,6 +25,7 @@ public class BookingPageTest extends BaseUiTest {
         );
 
         page.clickReserveNow()
+                .bookingForm()
                 .fillForm("John", "Doe", "john@example.com", "380123456789")
                 .doubleClickReserveNow();
 
@@ -39,6 +39,7 @@ public class BookingPageTest extends BaseUiTest {
                 .getFirstRoomCard()
                 .clickBookNow();
         bookingForm.clickReserveNow()
+                .bookingForm()
                 .fillForm("John", "Doe", "john@example.com", "380123456789")
                 .clickReserveNow();
 
@@ -60,11 +61,13 @@ public class BookingPageTest extends BaseUiTest {
 
         var booking = bookingPage.openBookingPage(checkIn, checkOut, roomId)
                 .clickReserveNow()
+                .bookingForm()
                 .fillForm(firstName, lastName, email, phone);
 
         BrowserUtils.openNewTabAndReturn();
 
-        booking.assertFirstName(firstName)
+        booking.bookingForm()
+                .assertFirstName(firstName)
                 .assertLastName(lastName)
                 .assertEmail(email)
                 .assertPhone(phone);
