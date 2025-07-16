@@ -43,14 +43,14 @@
             <version>${allure.version}</version>
         </dependency>
 
-        <!-- Allure RestAssured для API тестов -->
+        <!-- Allure RestAssured -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-rest-assured</artifactId>
             <version>${allure.version}</version>
         </dependency>
 
-        <!-- Allure Selenide для UI тестов -->
+        <!-- Allure Selenide -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-selenide</artifactId>
@@ -131,7 +131,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Surefire Plugin с настройкой Allure и AspectJ -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

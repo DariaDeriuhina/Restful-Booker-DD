@@ -26,8 +26,7 @@ This project tests both the **API and UI** of the Restful-Booker platform. The f
 
 ### ✅ Local Run (UI)
 
-1. Make sure Docker Desktop is installed and running (only required for remote run).
-2. Run tests locally with the following parameters:
+1. Run tests locally with the following parameters:
 
 ```bash
 mvn clean test \
@@ -39,8 +38,9 @@ mvn clean test \
 
 ### 🌐 Remote Run via Selenium Grid
 
-1. Ensure Docker Desktop is running.
-2. Run tests remotely:
+1. Make sure Docker Desktop is installed.
+2. Ensure Docker Desktop is running.
+3. Run tests remotely:
 
 ```bash
 mvn clean test \
@@ -54,7 +54,7 @@ mvn clean test \
 
 ## 🏃 GitHub Actions (CI)
 
-All UI and API tests are executed in CI using **GitHub Actions** and **Selenoid** via Docker. Tests run in a grid environment.
+Tests run in a Selenium Grid environment powered by Selenoid and Docker.
 
 ---
 
@@ -63,6 +63,12 @@ All UI and API tests are executed in CI using **GitHub Actions** and **Selenoid*
 View the latest Allure report from CI:
 
 https://dariaderiuhina.github.io/Restful-Booker-DD/
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+The failed tests are known bugs — you can find their descriptions in the README section below.
 
 ---
 
@@ -78,22 +84,22 @@ https://dariaderiuhina.github.io/Restful-Booker-DD/
 ## 🌟 Known Bugs
 
 BUG #1: Form submits with invalid Check In/Out dates: dates in the past (both UI/API level)
-🔹 BookingApiTest.bookingInPastShouldBeRejectedTest
-🔹 BookingFormUiTest.invalidBookingDatesShouldDisableBooking
+BookingApiTest.bookingInPastShouldBeRejectedTest
+BookingFormUiTest.invalidBookingDatesShouldDisableBooking
 
 BUG #2: Form submits with invalid Check In/Out dates: check-in date after check-out date (both UI/API level)
-🔹 BookingFormUiTest.invalidBookingDatesShouldDisableBooking
+BookingFormUiTest.invalidBookingDatesShouldDisableBooking
 
 BUG #3: Date picker allows to select past dates
-🔹 BookingFormUiTest.invalidBookingDatesShouldDisableBooking
+BookingFormUiTest.invalidBookingDatesShouldDisableBooking
 
 BUG #4: Double-click on 'Reserve Now' triggers client-side error due to race condition (JavaScript crash)
-🔹 BookingFormUiTest.doubleClickReserveNowTest
+BookingFormUiTest.doubleClickReserveNowTest
 
 BUG #5: Clicking on "Rooms" or "Contact" tabs does not scroll to the corresponding section reliably
-🔹 HomePageTest
+HomePageTest
 
 BUG #6: Room cards sometimes overlap when window is resized, causing layout issues
 
 BUG #7: API should not accept dangerous payloads in booking form fields (e.g., SQL injection strings)
-🔹 BookingApiTest.sqlInjectionBookingFormTest
+BookingApiTest.sqlInjectionBookingFormTest
