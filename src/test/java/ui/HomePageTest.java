@@ -6,7 +6,7 @@ import ui.components.AlertMessage;
 import ui.components.sections.RoomsSection;
 import testdata.BookingTestData;
 import testdata.ContactTestData;
-import utils.ScrollUtils;
+import utils.assertions.UiAssertions;
 import utils.base.BaseUiTest;
 
 import java.time.LocalDate;
@@ -49,22 +49,22 @@ public class HomePageTest extends BaseUiTest {
     @Test(groups = {UI, REGRESSION})
     public void scrollToSectionsByHeaderTest() {
         homePage.header().clickRooms();
-        ScrollUtils.assertAnchorHash("#rooms");
+        UiAssertions.assertAnchorHash("#rooms");
 
         homePage.header().clickBooking();
-        ScrollUtils.assertAnchorHash("#booking");
+        UiAssertions.assertAnchorHash("#booking");
 
         homePage.header().clickLocation();
-        ScrollUtils.assertAnchorHash("#location");
+        UiAssertions.assertAnchorHash("#location");
 
         homePage.header().clickContact();
-        ScrollUtils.assertAnchorHash("#contact");
+        UiAssertions.assertAnchorHash("#contact");
     }
 
     @Description("Check Availability button leads to Rooms section validation")
     @Test(groups = {UI, REGRESSION}, dataProvider = "validBookingDates", dataProviderClass = BookingTestData.class)
     public void checkAvailabilityBtnLeadToRoomsTest(LocalDate checkIn, LocalDate checkOut) {
-        var bookingSection = homePage.header.clickBooking();
+        var bookingSection = homePage.header().clickBooking();
 
         var roomSection = bookingSection.applyCheckInDate(checkIn)
                 .applyCheckOutDate(checkOut)

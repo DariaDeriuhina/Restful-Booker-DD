@@ -32,8 +32,9 @@ public class GridStarter {
     }
 
     private static boolean isGridRunning() {
+        var gridStatusUrl = new EnvProperties("env.properties").get("seleniumUrl", "http://localhost:4444/wd/hub/status");
         try {
-            var connection = (HttpURLConnection) new URL("http://localhost:4444/wd/hub/status").openConnection();
+            var connection = (HttpURLConnection) new URL(gridStatusUrl).openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
             return connection.getResponseCode() == 200;
@@ -44,25 +45,15 @@ public class GridStarter {
 
     private static void tryStartGrid() {
         try {
-            // Попробовать docker compose (новая версия) или docker-compose (старая)
-            var commands = new String[][]{
-                    {"docker", "compose", "up", "-d"},
-                    {"docker-compose", "up", "-d"}
-            };
-
-            for (var command : commands) {
-                try {
-                    var process = new ProcessBuilder(command).start();
-                    if (process.waitFor() == 0) {
-                        log.info("Grid startup command executed successfully");
-                        return;
-                    }
-                } catch (Exception ignored) {}
+            var process = new ProcessBuilder("docker", "compose", "up", "-d").start();
+            if (process.waitFor() == 0) {
+                log.info("Grid startup command executed successfully");
+            } else {
+                log.warn("Failed to start Grid. Exit code: {}", process.exitValue());
             }
-
-            log.warn("Could not start Grid automatically. Please run: docker compose up -d");
         } catch (Exception e) {
             log.warn("Could not start Grid automatically: {}", e.getMessage());
+            log.warn("Please run manually: docker compose up -d");
         }
     }
 

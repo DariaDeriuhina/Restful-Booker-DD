@@ -1,11 +1,11 @@
 package testdata;
 
+import api.models.BookingDates;
 import org.testng.annotations.DataProvider;
+import utils.DateUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static utils.DateUtils.generateRandomDates;
 
 public class BookingTestData {
 
@@ -188,5 +188,11 @@ public class BookingTestData {
                 {"José", "François"},
                 {"Müller", "Schröder"}
         };
+    }
+
+    private static BookingDates generateRandomDates() {
+        var checkIn = DateUtils.generateRandomDate(1, 365);
+        var checkOut = checkIn.plusDays(1);
+        return new BookingDates(checkIn.toString(), checkOut.toString());
     }
 }

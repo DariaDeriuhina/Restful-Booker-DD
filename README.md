@@ -1,105 +1,90 @@
-# Restful-Booker-DD
+# Restful-Booker Test Automation
 
-UI and API automation project for [automationintesting.online](https://automationintesting.online/) built with **Java**, **Selenide**, **Rest Assured**, and **TestNG**.
+UI and API automation project for [automationintesting.online](https://automationintesting.online/) built with **Java**, **Selenide**, **RestAssured**, and **TestNG**.
 
----
+## Technologies
 
-## ✨ Overview
+- Java 17
+- Selenide
+- RestAssured
+- TestNG
+- Allure
+- Maven
+- Selenium Grid
+- Docker
 
-This project tests both the **API and UI** of the Restful-Booker platform. The framework is designed to be scalable, readable, and CI/CD-friendly.
+## Configuration
 
----
+Edit `src/main/resources/env.properties`:
 
-## 🌐 Technologies Used
-
-* Java 18
-* Selenide
-* Rest Assured
-* TestNG
-* Allure for reporting
-* Maven
-* GitHub Actions (CI)
-* Selenium Grid
-* Docker Desktop (required for remote UI run)
-
-## ⚙️ How to Run Tests
-
-### ✅ Local Run (UI)
-
-1. Run tests locally with the following parameters:
-
-```bash
-mvn clean test \
-  -ea \
-  -DbrowserName=chrome \
-  -Dheadless=false \
-  -DrunMode=local
+```properties
+baseUrl=https://automationintesting.online/
+remoteUrl=http://localhost:4444/wd/hub
+username=admin
+password=password
 ```
 
-### 🌐 Remote Run via Selenium Grid
-
-1. Make sure Docker Desktop is installed.
-2. Ensure Docker Desktop is running.
-3. Run tests remotely:
-
+You can override settings via system properties or environment variables:
 ```bash
-mvn clean test \
-  -ea \
-  -DbrowserName=chrome \
-  -Dheadless=true \
-  -DrunMode=remote
+mvn test -Dusername=myuser -Dpassword=mypass
 ```
 
----
+## How to Run
 
-## 🏃 GitHub Actions (CI)
+### Local (UI)
+```bash
+mvn clean test -DbrowserName=chrome -Dheadless=false -DrunMode=local
+```
 
-Tests run in a Selenium Grid environment powered by Selenoid and Docker.
+### Remote (Selenium Grid)
+```bash
+make sure Docker Desktop is running
 
----
+# Run tests
+mvn clean test -DbrowserName=chrome -Dheadless=true -DrunMode=remote
 
-## 🔬 Allure Report
+# Stop Grid
+docker compose down
+```
 
-View the latest Allure report from CI:
+### Test Groups
+- `API` - API tests only
+- `UI` - UI tests only
+- `REGRESSION` - All regression tests
 
-https://dariaderiuhina.github.io/Restful-Booker-DD/
+## Reports
 
-![img.png](img.png)
+**Latest CI Report:** https://dariaderiuhina.github.io/Restful-Booker-DD/
 
-![img_1.png](img_1.png)
+## Known Bugs
 
-The failed tests are known bugs — you can find their descriptions in the README section below.
+These are **real bugs** found during testing:
 
----
+**API:**
+- Booking accepts past dates (`BookingApiTest.bookingInPastShouldBeRejectedTest`)
+- SQL injection vulnerability (`BookingApiTest.sqlInjectionBookingFormTest`)
 
-## 🌟 Features Covered (UI)
+**UI:**
+- Invalid dates don't disable booking (`HomePageTest.invalidBookingDatesShouldDisableBooking`)
+- Double-click causes JS error (`BookingPageTest.doubleClickReserveNowTest`)
+- Header navigation scrolling issues (`HomePageTest.scrollToSectionsByHeaderTest`)
 
-* Booking creation and confirmation
-* Date picker and dynamic calendar handling
-* Form validation (empty fields, incorrect input)
-* Contact form scenarios
-* Room filtering and listing
-* Navigation and UI interactions
+## Project Structure
 
-## 🌟 Known Bugs
+```
+src/
+├── main/java/
+│   ├── api/          # API client, models, services
+│   ├── ui/           # Page objects, components  
+│   └── utils/        # Utilities, config
+└── test/java/
+    ├── api/          # API tests
+    ├── ui/           # UI tests
+    └── testdata/     # Test data providers
+```
 
-BUG #1: Form submits with invalid Check In/Out dates: dates in the past (both UI/API level)
-BookingApiTest.bookingInPastShouldBeRejectedTest
-BookingFormUiTest.invalidBookingDatesShouldDisableBooking
+## Requirements
 
-BUG #2: Form submits with invalid Check In/Out dates: check-in date after check-out date (both UI/API level)
-BookingFormUiTest.invalidBookingDatesShouldDisableBooking
-
-BUG #3: Date picker allows to select past dates
-BookingFormUiTest.invalidBookingDatesShouldDisableBooking
-
-BUG #4: Double-click on 'Reserve Now' triggers client-side error due to race condition (JavaScript crash)
-BookingFormUiTest.doubleClickReserveNowTest
-
-BUG #5: Clicking on "Rooms" or "Contact" tabs does not scroll to the corresponding section reliably
-HomePageTest
-
-BUG #6: Room cards sometimes overlap when window is resized, causing layout issues
-
-BUG #7: API should not accept dangerous payloads in booking form fields (e.g., SQL injection strings)
-BookingApiTest.sqlInjectionBookingFormTest
+- Java 17+
+- Maven 3.8+
+- Docker (for remote execution)

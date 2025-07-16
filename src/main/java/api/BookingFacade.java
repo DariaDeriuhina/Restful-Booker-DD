@@ -1,15 +1,17 @@
 package api;
 
-import api.models.*;
+import api.models.BookingDates;
+import api.models.BookingRequest;
+import api.models.BookingResult;
+import api.models.UserInfo;
 import api.services.BookingApiService;
 import api.testdata.BookingRequestBuilder;
 import io.qameta.allure.Step;
 
-import java.time.LocalDate;
-
 public class BookingFacade {
     private final BookingApiService bookingApi = new BookingApiService();
 
+    @Step("Book the room with custom user and dates")
     public BookingResult book(UserInfo user, int roomId, BookingDates period) {
         var request = BookingRequestBuilder.builder()
                 .forRoom(roomId)
@@ -23,44 +25,15 @@ public class BookingFacade {
         return send(request);
     }
 
-    @Step("Book the room with api")
-    public BookingResult bookDefault(int roomId, LocalDate checkIn, LocalDate checkOut) {
-        var user = new UserInfo("Default", "User", "default@example.com", "12345678901");
-        var period = new BookingDates(checkIn.toString(), checkOut.toString());
-        return book(user, roomId, period);
-    }
-
-    @Step("Book the room with api without dates")
-    public BookingResult bookRoomWithoutDates(int roomId) {
-        var request = BookingRequestBuilder.builder()
-                .forRoom(roomId)
-                .by("NoDate", "User")
-                .withEmail("nodate@example.com")
-                .withPhone("12345678901")
-                .withDeposit(false)
-                .withoutDates()
-                .build();
-
-        return send(request);
-    }
-
-    @Step("Book the room with api with malicious name")
-    public BookingResult bookWithMaliciousName(int roomId, LocalDate checkIn, LocalDate checkOut, String maliciousName) {
-        var request = BookingRequestBuilder.builder()
-                .forRoom(roomId)
-                .by(maliciousName, "Safe")
-                .withEmail("safe@example.com")
-                .withPhone("12345678901")
-                .withDeposit(true)
-                .from(checkIn.toString())
-                .to(checkOut.toString())
-                .build();
-
-        return send(request);
-    }
-
+    @Step("Book the room with given request")
     public BookingResult book(BookingRequest request) {
         return send(request);
+    }
+
+    @Step("Book the room with default user")
+    public BookingResult bookDefault(int roomId, BookingDates period) {
+        var user = new UserInfo("Default", "User", "default@example.com", "12345678901");
+        return book(user, roomId, period);
     }
 
     private BookingResult send(BookingRequest request) {

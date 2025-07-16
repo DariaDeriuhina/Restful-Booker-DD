@@ -3,7 +3,7 @@ package ui;
 import io.qameta.allure.*;
 import org.testng.annotations.Test;
 import utils.BrowserUtils;
-import utils.ScrollUtils;
+import utils.assertions.UiAssertions;
 import utils.base.BaseUiTest;
 
 import java.time.LocalDate;
@@ -45,7 +45,7 @@ public class BookingPageTest extends BaseUiTest {
 
         assertThat(bookingForm.getConfirmationDates()).isEqualTo(LocalDate.now() + " - " + LocalDate.now().plusDays(1));
         bookingForm.clickReturnHome();
-        ScrollUtils.assertAnchorHash("");
+        UiAssertions.assertAnchorHash("");
     }
 
     @Description("Multi-Tab: Form data in Booking should persist after switching tabs")

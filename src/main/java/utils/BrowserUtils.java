@@ -1,7 +1,9 @@
 package utils;
 
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 
@@ -12,16 +14,16 @@ public class BrowserUtils {
         var originalWindow = driver.getWindowHandle();
 
         executeJavaScript("window.open('about:blank', '_blank');");
-        var allWindows = driver.getWindowHandles();
 
-        for (var handle : allWindows) {
+        var wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(d -> d.getWindowHandles().size() > 1);
+
+        for (var handle : driver.getWindowHandles()) {
             if (!handle.equals(originalWindow)) {
                 driver.switchTo().window(handle);
                 break;
             }
         }
-
-        Selenide.sleep(1000);
 
         driver.close();
         driver.switchTo().window(originalWindow);

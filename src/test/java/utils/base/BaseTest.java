@@ -10,11 +10,12 @@ import utils.EnvProperties;
 import utils.GridStarter;
 
 import static com.codeborne.selenide.Selenide.closeWebDriver;
-import static utils.EnvProperties.BASE_URL;
 
 @Slf4j
 @Listeners({utils.RetryListener.class})
 public abstract class BaseTest {
+
+    protected EnvProperties env;
 
     @BeforeSuite
     public void setUpAllure() {
@@ -27,15 +28,18 @@ public abstract class BaseTest {
     @BeforeMethod
     @Parameters({"browserName", "headless"})
     public void setUp(String browserName, boolean headless) {
-        EnvProperties.setUpInstance();
+        env = new EnvProperties("env.properties");
+
         var runMode = System.getProperty("runMode", "local");
+        var baseUrl = env.get("baseUrl", "https://automationintesting.online/");
+        var remoteUrl = env.get("remoteUrl", "http://localhost:4444/wd/hub");
 
         Configuration.browser = browserName;
         Configuration.headless = headless;
-        Configuration.baseUrl = BASE_URL;
+        Configuration.baseUrl = baseUrl;
 
         if ("remote".equalsIgnoreCase(runMode)) {
-            Configuration.remote = "http://localhost:4444/wd/hub";
+            Configuration.remote = remoteUrl;
         } else {
             Configuration.remote = null;
         }
@@ -46,9 +50,10 @@ public abstract class BaseTest {
         log.info("Run mode: {}", runMode);
         log.info("Browser: {} | Headless: {}", browserName, headless);
         log.info("URL: {}", Configuration.remote != null ? Configuration.remote : "local");
-        log.info("Base URL: {}", BASE_URL);
+        log.info("Base URL: {}", baseUrl);
         log.info("==========================");
-        Selenide.open(BASE_URL);
+
+        Selenide.open(baseUrl);
 
         if (!headless && Configuration.remote == null) {
             Selenide.webdriver().driver().getWebDriver().manage().window().maximize();

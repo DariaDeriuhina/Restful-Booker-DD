@@ -15,7 +15,7 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          java-version: '18'
+          java-version: '17'
           distribution: 'temurin'
 
       - name: Start Selenium Grid
@@ -29,7 +29,13 @@ jobs:
           docker ps --filter "name=selenium" --format "{{.Names}}"
 
       - name: Run Tests
-        run: mvn clean verify -DbrowserName=chrome -Dheadless=true -DrunMode=remote || true
+        run: |
+          mvn clean verify \
+            -DbrowserName=chrome \
+            -Dheadless=true \
+            -DrunMode=remote \
+            -Dusername=${{ secrets.USERNAME }} \
+            -Dpassword=${{ secrets.PASSWORD }} || true
 
       - name: Generate Allure Report
         if: always()
