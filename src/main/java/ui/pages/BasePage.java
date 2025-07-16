@@ -22,7 +22,7 @@ public abstract class BasePage extends BaseElement {
         WaitUtils.waitForPageToLoad();
     }
 
-    @Step("Open page {}")
+    @Step("Open page {url}")
     protected void openPage(String url) {
         Selenide.open(url);
         WaitUtils.waitForPageToLoad();

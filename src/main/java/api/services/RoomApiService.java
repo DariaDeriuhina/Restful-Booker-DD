@@ -35,7 +35,7 @@ public class RoomApiService {
         );
     }
 
-    @Step("Get room by {}")
+    @Step("Get room by id = {id}")
     public Room getRoomById(int id) {
         return api.execute(
                 ApiRequest.<Room>builder()

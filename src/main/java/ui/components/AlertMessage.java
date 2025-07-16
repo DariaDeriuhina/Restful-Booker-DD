@@ -19,7 +19,7 @@ public class AlertMessage extends BaseElement {
         return body.$$("p, li");
     }
 
-    @Step("Check error messages: {}")
+    @Step("Check error messages: {expectedMessages}")
     public void shouldHaveMessages(List<String> expectedMessages) {
         var actualTexts = messages().texts();
         assertThat(actualTexts).containsExactlyInAnyOrderElementsOf(expectedMessages);

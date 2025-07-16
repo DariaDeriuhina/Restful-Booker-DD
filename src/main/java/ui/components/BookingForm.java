@@ -21,7 +21,7 @@ public class BookingForm extends BaseElement {
         this.phoneField = $("[placeholder='Phone']");
     }
 
-    @Step("Fill the form with: {}, {}, {}")
+    @Step("Fill the form with: {firstName}, {lastName}, {email}, {phone}")
     public BookingPage fillForm(String firstName, String lastName, String email, String phone) {
         firstNameField.setValue(firstName);
         lastNameField.setValue(lastName);
