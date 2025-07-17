@@ -8,6 +8,7 @@ import testdata.BookingTestData;
 import testdata.ContactTestData;
 import utils.assertions.UiAssertions;
 import utils.base.BaseUiTest;
+import utils.constants.TestConstants;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,11 +39,11 @@ public class HomePageTest extends BaseUiTest {
     @Description("Verify All Section Titles")
     @Test(groups = {UI, REGRESSION})
     public void sectionTitlesTest() {
-        assertThat(homePage.pageTitle().getText()).isEqualTo("Welcome to Shady Meadows B&B");
-        homePage.booking().verifySectionTitle("Check Availability & Book Your Stay");
-        homePage.rooms().verifySectionTitle("Our Rooms");
-        homePage.contact().verifySectionTitle("Send Us a Message");
-        homePage.location().verifySectionTitle("Our Location");
+        assertThat(homePage.pageTitle().getText()).isEqualTo(TestConstants.WELCOME_TITLE);
+        homePage.booking().verifySectionTitle(TestConstants.BOOKING_SECTION_TITLE);
+        homePage.rooms().verifySectionTitle(TestConstants.ROOMS_SECTION_TITLE);
+        homePage.contact().verifySectionTitle(TestConstants.CONTACT_SECTION_TITLE);
+        homePage.location().verifySectionTitle(TestConstants.LOCATION_SECTION_TITLE);
     }
 
     @Description("Verify scroll to sections via header")

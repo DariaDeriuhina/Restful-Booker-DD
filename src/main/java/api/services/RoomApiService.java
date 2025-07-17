@@ -56,6 +56,6 @@ public class RoomApiService {
                         .responseType(BookingAvailability[].class)
                         .build()
         );
-        return List.of(availability);
+        return availability != null ? List.of(availability) : List.of();
     }
 }

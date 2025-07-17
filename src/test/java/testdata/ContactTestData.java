@@ -1,6 +1,7 @@
 package testdata;
 
 import org.testng.annotations.DataProvider;
+import utils.constants.TestConstants;
 
 import java.util.List;
 
@@ -10,11 +11,11 @@ public class ContactTestData {
     public Object[][] contactFormData() {
         return new Object[][] {
                 {
-                        "Anna",
-                        "anna@example.com",
-                        "380123456789",
-                        "Booking inquiry",
-                        "I would like to book a room at your hotel.",
+                        TestConstants.DEFAULT_FIRSTNAME,
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
+                        TestConstants.CONTACT_SUBJECT,
+                        TestConstants.CONTACT_MESSAGE,
                         List.of()
                 },
                 {
@@ -35,23 +36,23 @@ public class ContactTestData {
                         )
                 },
                 {
-                        "Anna",
+                        TestConstants.DEFAULT_FIRSTNAME,
                         "invalid-email",
-                        "380123456789",
-                        "Booking inquiry",
+                        TestConstants.TEST_PHONE,
+                        TestConstants.CONTACT_SUBJECT,
                         "Valid message with enough length.",
                         List.of("must be a well-formed email address")
                 },
                 {
                         "",
-                        "anna@example.com",
-                        "380123456789",
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
                         "Subject",
                         "Valid long  message.",
                         List.of("Name may not be blank")
                 },
                 {
-                        "Anna",
+                        TestConstants.DEFAULT_FIRSTNAME,
                         "",
                         "380123456789",
                         "Subject",
@@ -59,7 +60,7 @@ public class ContactTestData {
                         List.of("Email may not be blank")
                 },
                 {
-                        "Anna",
+                        TestConstants.DEFAULT_FIRSTNAME,
                         "anna@example.com",
                         "",
                         "Subject",
@@ -67,7 +68,7 @@ public class ContactTestData {
                         List.of("Phone may not be blank", "Phone must be between 11 and 21 characters.")
                 },
                 {
-                        "Anna",
+                        TestConstants.DEFAULT_FIRSTNAME,
                         "anna@example.com",
                         "123",
                         "Subject",
@@ -75,33 +76,33 @@ public class ContactTestData {
                         List.of("Phone must be between 11 and 21 characters.")
                 },
                 {
-                        "Anna",
-                        "anna@example.com",
-                        "380123456789",
+                        TestConstants.DEFAULT_FIRSTNAME,
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
                         "",
                         "Valid long  message.",
                         List.of("Subject may not be blank", "Subject must be between 5 and 100 characters.")
                 },
                 {
-                        "Anna",
-                        "anna@example.com",
-                        "380123456789",
+                        TestConstants.DEFAULT_FIRSTNAME,
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
                         "Hi",
                         "Valid long  message.",
                         List.of("Subject must be between 5 and 100 characters.")
                 },
                 {
-                        "Anna",
-                        "anna@example.com",
-                        "380123456789",
+                        TestConstants.DEFAULT_FIRSTNAME,
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
                         "Subject",
                         "",
                         List.of("Message may not be blank", "Message must be between 20 and 2000 characters.")
                 },
                 {
-                        "Anna",
-                        "anna@example.com",
-                        "380123456789",
+                        TestConstants.DEFAULT_FIRSTNAME,
+                        TestConstants.TEST_EMAIL,
+                        TestConstants.TEST_PHONE,
                         "Subject",
                         "Too short",
                         List.of("Message must be between 20 and 2000 characters.")

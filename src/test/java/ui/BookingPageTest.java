@@ -1,10 +1,12 @@
 package ui;
 
 import io.qameta.allure.*;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import utils.BrowserUtils;
 import utils.assertions.UiAssertions;
 import utils.base.BaseUiTest;
+import utils.constants.TestConstants;
 
 import java.time.LocalDate;
 
@@ -14,19 +16,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static utils.constants.TestGroups.*;
 
 public class BookingPageTest extends BaseUiTest {
+    protected String firstName;
+    protected String lastName;
+    protected String email;
+    protected String phone;
+    protected LocalDate checkIn;
+    protected LocalDate checkOut;
+    protected int roomId;
+    @BeforeMethod
+    public void setupBookingTestData() {
+        firstName = TestConstants.DEFAULT_FIRSTNAME;
+        lastName = TestConstants.DEFAULT_LASTNAME;
+        email = TestConstants.DEFAULT_EMAIL;
+        phone = TestConstants.DEFAULT_PHONE;
+        checkIn = TestConstants.getDefaultCheckIn();
+        checkOut = TestConstants.getDefaultCheckOut();
+        roomId = TestConstants.DEFAULT_ROOM_ID;
+    }
 
     @Description("BUG: Double click on 'Reserve Now' triggers client-side error due to race condition")
     @Test(groups = {UI, REGRESSION})
     public void doubleClickReserveNowTest() {
-        var page = bookingPage.openBookingPage(
-                LocalDate.now(),
-                LocalDate.now().plusDays(1),
-                1
-        );
+        var page = bookingPage.openBookingPage(checkIn, checkOut, roomId);
 
         page.clickReserveNow()
                 .bookingForm()
-                .fillForm("John", "Doe", "john@example.com", "380123456789")
+                .fillForm(firstName, lastName, email, phone)
                 .doubleClickReserveNow();
 
         $("h2").shouldNotHave(text("Application error"));
@@ -40,7 +55,7 @@ public class BookingPageTest extends BaseUiTest {
                 .clickBookNow();
         bookingForm.clickReserveNow()
                 .bookingForm()
-                .fillForm("John", "Doe", "john@example.com", "380123456789")
+                .fillForm(firstName, lastName, email, phone)
                 .clickReserveNow();
 
         assertThat(bookingForm.getConfirmationDates()).isEqualTo(LocalDate.now() + " - " + LocalDate.now().plusDays(1));
@@ -51,14 +66,6 @@ public class BookingPageTest extends BaseUiTest {
     @Description("Multi-Tab: Form data in Booking should persist after switching tabs")
     @Test(groups = {UI, REGRESSION})
     public void bookingFormDataPersistAfterTabSwitchTest() {
-        var firstName = "John";
-        var lastName = "Doe";
-        var email = "john.doe@example.com";
-        var phone = "12345678901";
-        var checkIn = LocalDate.now().plusDays(3);
-        var checkOut = checkIn.plusDays(1);
-        var roomId = 1;
-
         var booking = bookingPage.openBookingPage(checkIn, checkOut, roomId)
                 .clickReserveNow()
                 .bookingForm()

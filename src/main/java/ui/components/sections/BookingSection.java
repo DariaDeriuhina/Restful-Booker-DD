@@ -41,13 +41,17 @@ public class BookingSection extends BaseSection {
     }
 
     public BookingSection applyCheckInDate(String dateStr) {
-        executeJavaScript("arguments[0].value = arguments[1];", checkInInput, dateStr);
+        setDateValue(dateStr);
         return this;
     }
 
     public BookingSection applyCheckOutDate(String dateStr) {
-        executeJavaScript("arguments[0].value = arguments[1];", checkOutInput, dateStr);
+        setDateValue(dateStr);
         return this;
+    }
+
+    private void setDateValue(String dateStr) {
+        executeJavaScript("arguments[0].value = arguments[1];", checkInInput, dateStr);
     }
 
     public RoomsSection clickOnCheckAvailability() {

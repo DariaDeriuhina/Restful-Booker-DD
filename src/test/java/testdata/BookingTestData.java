@@ -3,6 +3,7 @@ package testdata;
 import api.models.BookingDates;
 import org.testng.annotations.DataProvider;
 import utils.DateUtils;
+import utils.constants.TestConstants;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,103 +57,103 @@ public class BookingTestData {
                 // Firstname validation
                 {
                         "Empty firstname",
-                        "", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        "", TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 18", "Firstname should not be blank")
                 },
                 {
                         "Firstname too short",
-                        "An", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        "An", TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 18")
                 },
                 {
                         "Firstname at min boundary",
-                        "Ann", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        "Ann", TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of()
                 },
                 {
                         "Firstname at max boundary",
-                        "A".repeat(18), "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        "A".repeat(18), TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of()
                 },
                 {
                         "Firstname too long",
-                        "A".repeat(19), "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        "A".repeat(19), TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 18")
                 },
 
                 // Lastname validation
                 {
                         "Empty lastname",
-                        "Anna", "", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, "", true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 30", "Lastname should not be blank")
                 },
                 {
                         "Lastname too short",
-                        "Anna", "Sm", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, "Sm", true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 30")
                 },
                 {
                         "Lastname at max boundary",
-                        "Anna", "S".repeat(30), true, "anna@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, "S".repeat(30), true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of()
                 },
                 {
                         "Lastname too long",
-                        "Anna", "S".repeat(31), true, "anna@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, "S".repeat(31), true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("size must be between 3 and 30")
                 },
 
                 // Email validation
                 {
                         "Empty email",
-                        "Anna", "Smith", true, "", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, "", TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("must not be empty")
                 },
                 {
                         "Invalid email - no @",
-                        "Anna", "Smith", true, "invalidemail", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, "invalidemail", TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - no domain",
-                        "Anna", "Smith", true, "test@", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, "test@", TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - no local part",
-                        "Anna", "Smith", true, "@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, "@example.com", TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
                 {
                         "Invalid email - double @",
-                        "Anna", "Smith", true, "test@@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, "test@@example.com", TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of("must be a well-formed email address")
                 },
 
                 // Phone validation
                 {
                         "Empty phone",
-                        "Anna", "Smith", true, "anna@example.com", "", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, "", generateRandomDates(),
                         List.of("must not be empty", "size must be between 11 and 21")
                 },
                 {
                         "Phone too short",
-                        "Anna", "Smith", true, "anna@example.com", "1234567890", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, "1234567890", generateRandomDates(),
                         List.of("size must be between 11 and 21")
                 },
                 {
                         "Phone at min boundary",
-                        "Anna", "Smith", true, "anna@example.com", "12345678901", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.DEFAULT_PHONE, generateRandomDates(),
                         List.of()
                 },
                 {
                         "Phone at max boundary",
-                        "Anna", "Smith", true, "anna@example.com", "1".repeat(21), generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, "1".repeat(21), generateRandomDates(),
                         List.of()
                 },
                 {
                         "Phone too long",
-                        "Anna", "Smith", true, "anna@example.com", "1".repeat(22), generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, "1".repeat(22), generateRandomDates(),
                         List.of("size must be between 11 and 21")
                 },
 
@@ -174,7 +175,7 @@ public class BookingTestData {
                 // Valid booking
                 {
                         "All fields valid",
-                        "Anna", "Smith", true, "anna@example.com", "380123456789", generateRandomDates(),
+                        TestConstants.DEFAULT_FIRSTNAME, TestConstants.DEFAULT_LASTNAME, true, TestConstants.TEST_EMAIL, TestConstants.TEST_PHONE, generateRandomDates(),
                         List.of()
                 }
         };
