@@ -20,6 +20,8 @@ Edit `src/main/resources/env.properties`:
 ```properties
 baseUrl=https://automationintesting.online/
 remoteUrl=http://localhost:4444/wd/hub
+seleniumUrl=http://localhost:4444/wd/hub/status
+bookingUrl=https://automationintesting.online/reservation/%d?checkin=%s&checkout=%s
 username=admin
 password=password
 ```
@@ -55,6 +57,8 @@ docker compose down
 ## Reports
 
 **Latest CI Report:** https://dariaderiuhina.github.io/Restful-Booker-DD/
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
 
 ## Known Bugs
 
