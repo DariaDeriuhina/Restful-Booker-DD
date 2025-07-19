@@ -1,14 +1,13 @@
 package utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class EnvProperties {
     private final Properties properties = new Properties();
 
     public EnvProperties(String fileName) {
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream(fileName)) {
+        try (var input = getClass().getClassLoader().getResourceAsStream(fileName)) {
             if (input == null) {
                 throw new IllegalArgumentException("Properties file not found: " + fileName);
             }
@@ -23,7 +22,7 @@ public class EnvProperties {
     }
 
     public String get(String key, String defaultValue) {
-        String systemProperty = System.getProperty(key);
+        var systemProperty = System.getProperty(key);
         return systemProperty != null ? systemProperty : properties.getProperty(key, defaultValue);
     }
 }

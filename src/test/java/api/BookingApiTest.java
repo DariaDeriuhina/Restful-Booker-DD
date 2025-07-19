@@ -71,7 +71,7 @@ public class BookingApiTest extends BaseApiTest {
         var dateRanges = List.of(
                 new BookingDates(checkIn.toString(), checkOut.toString()),
                 new BookingDates(checkIn.plusDays(1).toString(), checkOut.plusDays(1).toString()),
-                new BookingDates(checkIn.plusDays(2).toString(), checkIn.plusDays(2).toString())
+                new BookingDates(checkIn.plusDays(2).toString(), checkOut.plusDays(2).toString())
         );
 
         for (var range : dateRanges) {
@@ -125,7 +125,7 @@ public class BookingApiTest extends BaseApiTest {
             var futures = executor.invokeAll(tasks);
 
             var threadResults = new Response[2];
-            for (int i = 0; i < futures.size(); i++) {
+            for (var i = 0; i < futures.size(); i++) {
                 threadResults[i] = futures.get(i).get();
             }
 

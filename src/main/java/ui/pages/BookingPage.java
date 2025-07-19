@@ -15,6 +15,7 @@ import static com.codeborne.selenide.Selenide.$$;
 @Getter
 @Accessors(fluent = true)
 public class BookingPage extends BasePage {
+
     private final BookingForm bookingForm;
     private final SelenideElement confirmationCardBodyDates;
 
@@ -43,7 +44,7 @@ public class BookingPage extends BasePage {
 
     @Step("Open booking page")
     public BookingPage openBookingPage(LocalDate checkIn, LocalDate checkOut, int roomId) {
-        var url = "https://automationintesting.online/reservation/%d?checkin=%s&checkout=%s".formatted(roomId, checkIn, checkOut);
+        var url = env.get("bookingUrl", "https://automationintesting.online/reservation/%d?checkin=%s&checkout=%s").formatted(roomId, checkIn, checkOut);
         openPage(url);
         return this;
     }

@@ -28,7 +28,7 @@ public class ApiClient implements ApiService {
         this(globalConfig != null ? globalConfig : ApiConfig.builder().build());
     }
 
-    public ApiClient(ApiConfig config) {
+    private ApiClient(ApiConfig config) {
         this.config = config;
         this.baseSpec = buildBaseSpec();
         configureRestAssured();

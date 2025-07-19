@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import ui.elements.BaseElement;
 import ui.components.Header;
+import utils.EnvProperties;
 import utils.WaitUtils;
 
 import static com.codeborne.selenide.Condition.*;
@@ -17,9 +18,11 @@ import static com.codeborne.selenide.Selenide.$$;
 @Accessors(fluent = true)
 public abstract class BasePage extends BaseElement {
     public Header header = new Header();
+    protected EnvProperties env;
 
     protected BasePage() {
         WaitUtils.waitForPageToLoad();
+        env = new EnvProperties("env.properties");
     }
 
     @Step("Open page {url}")

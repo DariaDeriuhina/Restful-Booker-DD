@@ -23,6 +23,7 @@ public class BookingPageTest extends BaseUiTest {
     protected LocalDate checkIn;
     protected LocalDate checkOut;
     protected int roomId;
+
     @BeforeMethod
     public void setupBookingTestData() {
         firstName = TestConstants.DEFAULT_FIRSTNAME;
@@ -41,8 +42,8 @@ public class BookingPageTest extends BaseUiTest {
 
         page.clickReserveNow()
                 .bookingForm()
-                .fillForm(firstName, lastName, email, phone)
-                .doubleClickReserveNow();
+                .fillForm(firstName, lastName, email, phone);
+        page.doubleClickReserveNow();
 
         $("h2").shouldNotHave(text("Application error"));
     }
@@ -55,8 +56,8 @@ public class BookingPageTest extends BaseUiTest {
                 .clickBookNow();
         bookingForm.clickReserveNow()
                 .bookingForm()
-                .fillForm(firstName, lastName, email, phone)
-                .clickReserveNow();
+                .fillForm(firstName, lastName, email, phone);
+        bookingForm.clickReserveNow();
 
         assertThat(bookingForm.getConfirmationDates()).isEqualTo(LocalDate.now() + " - " + LocalDate.now().plusDays(1));
         bookingForm.clickReturnHome();
@@ -73,8 +74,7 @@ public class BookingPageTest extends BaseUiTest {
 
         BrowserUtils.openNewTabAndReturn();
 
-        booking.bookingForm()
-                .assertFirstName(firstName)
+        booking.assertFirstName(firstName)
                 .assertLastName(lastName)
                 .assertEmail(email)
                 .assertPhone(phone);

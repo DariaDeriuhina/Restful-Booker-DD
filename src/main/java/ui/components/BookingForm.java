@@ -3,7 +3,6 @@ package ui.components;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import ui.elements.BaseElement;
-import ui.pages.BookingPage;
 
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Selenide.$;
@@ -22,12 +21,12 @@ public class BookingForm extends BaseElement {
     }
 
     @Step("Fill the form with: {firstName}, {lastName}, {email}, {phone}")
-    public BookingPage fillForm(String firstName, String lastName, String email, String phone) {
+    public BookingForm fillForm(String firstName, String lastName, String email, String phone) {
         firstNameField.setValue(firstName);
         lastNameField.setValue(lastName);
         emailField.setValue(email);
         phoneField.setValue(phone);
-        return new BookingPage();
+        return this;
     }
 
     public BookingForm assertFirstName(String expected) {
